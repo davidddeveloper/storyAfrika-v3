@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join us form</title>
+    <link rel="icon" type="image/png" href="/static/images/logo.jpg">
+    <style>
+
+    .join-community-container {
+        text-align: center;
+        padding: 20px;
+        padding-top: 50px;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 25%, #ffd700 50%, #ff69b4 75%, #2575fc 100%);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        color: white;
+        border-radius: 10px;
+        width: 800px;
+        margin: 50px auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        
+    }
+
+    .join-community-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .join-community-form input {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 60%;
+        max-width: 300px;
+        outline: none;
+    }
+
+    .join-community-form button {
+        padding: 10px 20px;
+        background-color: #28a745; /* Green button */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        flex-wrap: wrap;
+    }
+
+    .join-community-form button:hover {
+        background-color: #218838;
+    }
+
+    .community-info {
+        margin-top: 10px;
+    }
+
+    .avatars {
+        display: flex;
+        justify-content: center;
+        gap: -10px; /* Overlap effect */
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+
+    .avatars img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid white;
+        object-fit: cover;
+    }
+
+    .community-info p {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 870px) {
+        .join-community-container {
+            overflow: hidden;
+            position: relative;
+            bottom: 10;
+            border-radius: 0;
+            width: 100%;
+            padding-inline: 5px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .join-community-container .join-community-form {
+            flex-direction: column;
+        }
+    }
+    
+    @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="join-community-container">
+        <div class="join-community-form">
+          <input type="email" placeholder="Your email here" />
+          <button>Join Our Newsletter</button>
+        </div>
+        <div class="community-info">
+          <div class="avatars">
+            <img src="{% static 'assets/images/davidconteh.png' %}" alt="Avatar 1" />
+            <img src="{% static 'assets/images/lukmanaufbau.jpg' %}" alt="Avatar 2" />
+            <img src="{% static 'assets/images/moseslonko.png' %}" alt="Avatar 3" />
+            <img src="{% static 'assets/images/womanivy.png' %}" alt="Avatar 4" />
+            <img src="{% static 'assets/images/dykeemman.png' %}" alt="Avatar 5" />
+            <img src="{% static 'assets/images/woman.png' %}" alt="Avatar 6" />
+          </div>
+          <p>Join thousands of Inspiring People</p>
+        </div>
+      </div>
+      
+      <script>
+        document.querySelector('.join-community-form button').addEventListener('click', () => {
+        const emailInput = document.querySelector('.join-community-form input');
+        if (!emailInput.value.includes('@')) {
+            alert('Please enter a valid email address!');
+        } else {
+            fetch('/subscribe-to-newsletter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: emailInput.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('.join-community-container').innerHTML = `
+                    <div class="welcome-to-storyafrika">
+                        <p>Welcome to StoryAfrika</p>
+                        <p>You have successfully subscribed to our newsletter</p>
+                    </div>
+                    `;
+                } else {
+                    alert('Something went wrong, please try again later.');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Something went wrong, please try again later.');
+            });
+        }
+        });
+
+      </script>
+</body>
+</html>

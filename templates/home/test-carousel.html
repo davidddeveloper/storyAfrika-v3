@@ -1,0 +1,253 @@
+<style>
+    body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+    .carousel-container {
+            position: relative;
+            width: 805px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .carousel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            transition: transform 0.5s ease-in-out;
+            border: 2px solid red;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+            z-index: 40;
+        }
+
+        .carousel .item {
+            flex-shrink: 0;
+            width: 500px;
+            height: 400px;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            /*border-radius: 10px;*/
+        }
+        .carousel .item img {
+            flex-shrink: 0;
+            width: 500px;
+            height: 400px;
+            object-fit: cover;
+            /*margin: 0 10px;*/
+            
+            transition: transform 0.5s ease, filter 0.5s ease;
+            /*border-radius: 10px;*/
+        }
+
+        .carousel .item.inactive {
+            /*transform: scale(0.8);*/
+            filter: brightness(0.7);
+        }
+
+        .carousel .item.active {
+            /*transform: scale(1.2555);*/
+            filter: brightness(1);
+            z-index: 30;
+            flex-shrink: 0;
+        }
+
+        .carousel .item.active img {
+            filter: brightness(.5);
+            flex-shrink: 0;
+        }
+
+        .dots-container {
+            position: absolute;
+            bottom: 0px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: #333;
+        }
+
+        div.text {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            margin-top: -60px;
+        }
+
+        div.text .topic {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        div.text .topic a {
+            text-decoration: none;
+            color: #fff;
+            padding: 5px;
+            border: 1px solid #fff;
+            border-radius: 10px;
+        }
+
+        div.text h2 {
+            text-align: center;
+            font-size: 30px;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .profile-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin-bottom: 1rem;
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            left: 40%;
+            transform: translateX(-40%);            
+        }
+        .profile-container img.profile-image {
+            display: block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 auto;
+            margin-right: .7rem;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: .5rem;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: small;
+            color: white;
+            flex-shrink: 0;
+        }
+        .profile-info p:first-child {
+            font-weight: bold;
+        }
+        .profile-info p:nth-child(2) {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        .profile-info .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+</style>
+
+<div class="carousel-container">
+    <div class="carousel">
+        <!--
+        <div class="item" class="inactive">
+            <img src="{% static 'assets/images/art.jpg' %}" alt="Image 1">
+            
+        </div>-->
+        {% for story in stories %}
+        {% if forloop.counter <= 4 %}
+        <div class="item" class="active">
+            <img src="{{ story.topics.first.banner }}" alt="Image 2">
+            <div class="text">
+                <p class="topic"><a href="">{{ story.topics.first.name }}</a></p>
+                <h2><a href="{% url 'app:story' story.id %}" style="text-decoration: none; color: inherit;">{{ story.title }}</a></h2>
+                <div class="profile-container">
+                    <img src="{{ story.writer.avatar }}" alt="Profile Image" class="profile-image">
+                    <div class="profile-info">
+                        <p>{% if story.writer.user.first_name and story.writer.user.last_name %} {{ story.writer.user.first_name }} {{ story.writer.user.last_name }} {% else %} {{story.writer.user.username}} {% endif %}</p>
+                        <div class="dot"></div>
+                        <p>{{ story.created_at | naturaltime}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <!--
+        <div class="item" class="inactive">
+            <img src="{% static 'assets/images/dancing.avif' %}" alt="Image 3">
+        </div>
+        <div class="item" class="inactive">
+            <img src="{% static 'assets/images/entrepreneur.avif' %}" alt="Image 4">
+        </div>
+        -->
+    </div>
+    <div class="dots-container">
+        <div class="dot"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+</div>
+<script>
+    /*const carousel = document.querySelector('.carousel');
+    const images = Array.from(carousel.children);
+    const dots = Array.from(document.querySelector('.dots-container').children);
+
+    let currentIndex = 1;
+
+    const updateCarousel = () => {
+        images.forEach((img, index) => {
+            img.classList.toggle('active', index === currentIndex);
+            img.classList.toggle('inactive', index !== currentIndex);
+        });
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+
+        const offset = (images[0].offsetWidth) * currentIndex; // Including margin
+        carousel.style.transform = `translateX(${-offset}px)`;
+        console.log(offset);
+        console.log("offsetWidth", images[0].offsetWidth);
+    };*/
+
+    /*dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+        });
+    });*/
+
+    /*images.forEach((img, index) => {
+        img.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+        });
+    });*/
+
+    /*updateCarousel();*/ // Initialize the carousel
+</script>
+</body>

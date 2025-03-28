@@ -1,0 +1,1001 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Charset and Viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title and Description -->
+    <title>StoryAfrika | {{ story.title }}</title>
+    <meta name="title" content="StoryAfrika - {{ story.title }}">
+    <meta name="description" content="{{ story.plain_text|truncatechars:200 }}">
+
+    <!-- Keywords -->
+    <meta name="keywords" content="{% for topic in story.topics.all %}{{ topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %}, African stories, African experiences, African achievements, StoryAfrika">
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="StoryAfrika - {{ story.title }}">
+    <meta property="og:description" content="{{ story.plain_text|truncatechars:200 }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{{ story.images.first.image }}">
+    <meta property="og:site_name" content="StoryAfrika">
+
+    <!-- Twitter Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StoryAfrika - {{ story.title }}">
+    <meta name="twitter:description" content="{{ story.plain_text|truncatechars:200 }}">
+    <meta name="twitter:image" content="{{ story.images.first.image }}">
+    <meta name="twitter:creator" content="@{{ story.writer.user.username }}">
+    <meta name="twitter:site" content="@StoryAfrika">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo.jpg' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet">
+
+    <!-- Styles and Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.3.3/tailwind.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/emoji-button.min.js" defer></script>
+
+    <!-- Quill --> 
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <!-- Additional Meta for SEO -->
+    <meta name="author" content="{{ story.writer.user.get_full_name }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            background-color: #fff !important;
+        }
+        .left-part {
+            flex: 1;
+        }
+        aside {
+            flex: 0 0 30%;
+            border-left: 2px solid #4a4a4a;
+        }
+        .container {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            /*height: 100vh;*/
+        }
+
+        .left-part .content {
+            margin-top: 50px;
+        }
+        .left-part .content h2 {
+            font-size: 35px; font-weight: bold; width: 80%; padding-left:30px;
+        }
+
+        .left-part .content h2, .left-part .content div.story-text,
+        aside.right-part h4, aside.right-part h3 {
+            font-family: 'Baloo 2', cursive;
+            line-height: 40px;
+        }
+
+        .left-part .content div.story-text {
+            line-height: 25px;
+            margin-top: 30px; color: #4A4A4A; padding-inline: 25px; font-size: 20px;
+        }
+
+        aside.right-part h3 {
+            font-weight: bolder;
+            line-height: 20px;
+        }
+
+        aside.right-part h4 {
+            line-height: 20px;
+            font-weight: normal;
+            margin-top: 0;
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            flex-shrink: 0;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        section.content {
+            padding-inline: 35px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                width: 100%;
+                height: 250px;
+            }
+        }
+
+        .carousel {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            z-index: 10;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+            .left-part{
+                width: 100%;
+            }
+            aside{
+                width: 100%;
+                flex: 1;
+                border-left: 0;
+                padding-inline: 0;
+                border-top: 2px solid black;
+                margin-top: 60px;
+            }
+            .related-stories, .also-by-user, .simillar-writers {
+                padding-inline: 30px;
+                box-sizing: border-box;
+            }
+            .carousel {
+                width: 100%;
+                height: 250px;
+            }
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            display: block;
+            object-fit: cover;
+            object-position: 40% 20%;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            border-radius: 10px;
+            user-select: none;
+            background-repeat: repeat;
+        }
+
+        .main-container:hover img.story-carousel-image {
+            transform: scale(1.1);
+            filter: brightness(0.5);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            width: 100%;
+            /*height: 100%;*/
+
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: transparent;
+        }
+
+        
+
+        .main-container:hover .carousel-nav, .main-container:hover .profile-container {
+            opacity: 1;
+            z-index: 20;
+            user-select: none;
+            
+        }
+
+        .carousel-nav button {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .carousel-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-nav .love-btn:hover, .carousel-nav .loved-btn:hover {
+            background-color: transparent;
+            transform: scale(1.1, 1.1);
+        }
+
+        .carousel-nav .love-btn, .carousel-nav .loved-btn {
+            position: relative;
+        }
+
+        .carousel-nav .love-count {
+            position: absolute;
+            top: -3px;
+            left: 55%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            color: black;
+            opacity: 0;
+        }
+
+        .carousel-nav .love-btn:hover .love-count, .carousel-nav .loved-btn:hover .love-count {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .carousel-nav .loved-btn .love-count {
+            color: #fff;
+        }
+
+        .profile-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            left: 40%;
+            transform: translateX(-40%);
+            flex-shrink: 0;
+        }
+        .profile-image {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white !important;
+            flex-shrink: 0;
+            gap: 15px;
+        }
+        .profile-info p:first-child {
+            font-weight: bold;
+        }
+        .profile-info p:nth-child(2) {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        .profile-info .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+        .success-card {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .success-card.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .success-card-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success-card img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 500px) {
+            .profile-container {
+                left: 30%;
+                transform: translateX(-30%);
+            }
+
+            .success-card {
+                padding: 20px;
+            }
+
+            .main-container .carousel-nav, .main-container .profile-container {
+                opacity: 1;
+                z-index: 20;
+                user-select: none;
+            }
+
+            .main-container img.story-carousel-image {
+                transform: scale(1.1);
+                filter: brightness(0.5);
+            }
+            .left-part .content h2 {
+                font-size: 30px;
+            }
+            section.content {
+                padding-inline: 15px;
+            }
+        }
+
+        @media (max-width: 370px) {
+            .profile-container {
+                left: 20%;
+                transform: translateX(-20%);
+            }
+            section.content {
+                padding-inline: 10px;
+            }
+            
+        }
+
+        @media (max-width: 900px) {
+            .left-part {
+            }
+        }
+    
+        /* MODAL TO SHOW IMAGES */
+        .image-container {
+          position: relative;
+          display: inline-block;
+        }
+        
+        /* Style the modal */
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.4);
+          z-index: 100;
+        }
+        
+        /* Style the modal content */
+        .modal-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 700px;
+        }
+        
+        /* Style the close button */
+        .close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+        
+        .close:hover,
+        .close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .modal {
+            width: 100%;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 5px;
+            font-size: 14px;
+            font-style: italic;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #story-title:focus {
+            border: 0;
+            outline: 0;
+        }
+
+        .text-editor-main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 30px;
+        }
+
+        img.image default-editor-story-image.image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 100%;
+        }
+    </style>
+</head>
+<body class="editor">
+    <div class="left-part">
+        <header>
+            {% include 'components/new-header.html' %}
+        </header>
+        <section class="content">
+            <!--{#<h2>On a very fine Sunday exactly at noon, the Quick Brown Fox! Jumped over the lazy dog!</h2>#}-->
+            
+            <h2 id="story-title" contenteditable="true" autocapitalize="sentences" autocorrect="on" autofocus aria-placeholder="{{ story.title }}"><p class="placeholder">{{ story.title }}</p></h2>
+            <section class=" main-carousel story-container container">
+                <div class="main-container">
+                    <div class="carousel">
+                        <!--<img src="{% static 'assets/images/books.jpg' %}" alt="Image 1">
+                        <img src="{% static 'assets/images/entrepreneur.avif' %}" alt="Image 2">
+                        <img src="{% static 'assets/images/innovation.jpg' %}" alt="Image 3">
+                        <img src="{% static 'assets/images/writing.jpg' %}" alt="Image 4">-->
+                        {% for image in story.images.all %}
+                        <img class="story-carousel-image image" src="{{ image.image.url }}" alt="{{image.alt}}"> <!--Image {{ forloop.counter }} -->
+                        {% endfor %}
+                        <img src="{% static 'assets/images/add-images-to-your-story.png' %}" alt="Example Image" class="story-carousel-image image default-editor-story-img">
+                        <!--<img src="{{story.topics.first.banner}}" alt="Image 4">-->
+            
+                    </div>
+                    <div class="carousel-nav">
+                        <button class="carousel-prev" id="carousel-prev"><img src="{% static 'assets/svgs/prev-thick.svg' %}" alt=""></button>
+                        <!--{% if request.user.is_authenticated and request.user.profile in story.likes.all %}
+                        <button class="loved-btn" style="display: block; background-color: transparent;"><img class="loved-svg" src="{% static 'assets/svgs/loved.svg' %}" alt="loved btn"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        <button class="love-btn" style="display: none; background-color: transparent;" data-story-id="{{ story.id }}"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love svg"></button>
+                        {% elif request.user.is_authenticated %}
+                        <button class="loved-btn" style="display: none; background-color: transparent;"><img class="loved-svg" src="{% static 'assets/svgs/loved.svg' %}" alt="loved btn"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        <button class="love-btn" style="display: block; background-color: transparent;" data-story-id="{{ story.id }}"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love svg"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        {% else %}
+                        <button class="love-btn"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love btn"></button>
+                        {% endif %}-->
+                        <button class="carousel-next" id="carousel-next"><img src="{% static 'assets/svgs/next-thick.svg' %}" alt=""></button>
+                    </div>
+                    <div class="profile-container">
+                        <img src="{{ story.writer.avatar }}" alt="Profile Image" class="profile-image">
+                        <div class="profile-info">
+                            <p style="color: #fff;">
+                                {% if story.writer.first_name and story.writer.last_name %} {{ story.writer.first_name }} {{ story.writer.last_name }} {% else %} {{story.writer.user.username}} {% endif %}</p>
+                            <div class="dot"></div>
+                            <p style="color: #fff;">{{ story.created_at|naturaltime }}</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {#<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, ex corrupti quia excepturi debitis, atque, expedita dolorem veritatis cum asperiores beatae iure. Accusamus culpa, odio perspiciatis ea delectus nemo, accusantium ipsam magnam corporis qui consequuntur deserunt provident ipsa. Facilis excepturi quidem temporibus velit, cum enim unde minima nihil. Error, veniam.</p>#}
+            
+            <!--<div class="story-content">
+                <div id="story-text-content" class="story-text story-text-content" style="color: #4a4a4a" contenteditable="true">{{ story.text|safe }}</div>
+                
+
+            </div>-->
+            <div class="text-editor-main-container">
+                {% include 'story/text-editor-with-tools.html' %}
+            </div>
+    
+        
+            <div id="delete-card" style="display: none; position: absolute; top: 0; left: 0; width: 100%; background-color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); padding: 1rem; text-align: center; animation: slideDown 0.5s ease forwards; z-index: 100;">
+                <h2>Are you sure you want to leave and delete this story?</h2>
+                <button class="yes-btn" onclick="">Yes</button>
+                <button class="no-btn" onclick="document.getElementById('delete-card').style.display = 'none'">No</button>
+            </div>
+            <style>
+                @keyframes slideDown {
+                    0% {
+                        transform: translateY(-100%);
+                    }
+                    100% {
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+            
+        </section>
+        
+    </div>
+    {% include 'story/editor-aside.html' %}
+
+    <!-- modal - story image view -->
+    <div class="modal" id="myModal">
+        <span class="close">&times;</span>
+        <div id="img01">
+            {% include 'story/modal_images.html' %}
+
+        </div>
+        <div id="caption" style="display: block; text-align: center; color: #fff; font-size: 16px; margin-top: 10px;"></div>
+      </div>
+
+      {% include 'components/tooltip.html' %}
+
+      <script>
+        // title
+        const editorStoryTitle = document.querySelector('#story-title');
+        editorStoryTitle.addEventListener('input', () => {
+            const placeholder = editorStoryTitle.querySelector('.placeholder')
+            if (placeholder) {
+                const firstletterusertype = placeholder.textContent.charAt(0);
+                placeholder.remove();
+                editorStoryTitle.textContent = firstletterusertype
+
+            }
+        // Move the cursor to the end of the content
+        function moveCursorToEnd(element) {
+            const range = document.createRange();
+            const sel = window.getSelection();
+            range.selectNodeContents(element);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+
+            moveCursorToEnd(editorStoryTitle);
+
+        });
+       
+        
+
+
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        
+        // Get the image and insert it inside the modal
+        
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+
+        // Show or Hide toolbar 
+        // show toolbar when editor is focus/editable and when the screen size is less than 500px
+        /*const editorTextContainer = document.querySelector('.story-text-content');
+        editorTextContainer.addEventListener('focus', () => {
+            const toolbar = document.getElementById('toolbar');
+            toolbar.style.display = 'flex';
+            console.log('visible...')
+        });*/
+        /*editorContainer.addEventListener('blur', () => {
+            const toolbar = document.getElementById('toolbar');
+            toolbar.style.display = 'none';
+        });*/
+
+        
+
+        const showModalOnImgClick = () => {
+            var images = document.querySelectorAll(".image");
+
+            images.forEach(img => {
+                img.onclick = function(){
+                    modal.style.display = "block";
+                    modalImg.src = this.src;
+                    captionText.innerHTML = this.alt;
+                }
+            })
+        }
+
+        showModalOnImgClick()
+        
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() { 
+          modal.style.display = "none";
+          const storyCarousel = document.querySelector('.story-container .carousel');
+          const modalCarousel = document.querySelector('.editor-image-modal .carousel');
+          const modalCarouselImages = modalCarousel.children;
+          storyCarousel.textContent = '';
+          Array.from(modalCarouselImages).forEach(img => {
+              const clonedImg = img.cloneNode(true);
+              clonedImg.classList.add('image');
+              storyCarousel.appendChild(clonedImg);
+          });
+
+          showModalOnImgClick();
+
+          // post the images
+          saveImages();
+        }
+
+        saveImages = () => {
+        const storyCarousel = document.querySelector('.story-container .carousel');
+
+        // Collect the image data
+        const images = [];
+        const carouselImages = carousel.children;
+        for (let i = 0; i < carouselImages.length; i++) {
+            const image = carouselImages[i];
+            images.push({
+            src: image.src,
+            alt: image.alt,
+            });
+        }
+
+        // Send the POST request
+        fetch('/editor/{{ story.id }}/save-images', {
+            method: 'POST',
+            headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ images }),
+        })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+        }
+
+    </script>
+
+    <script>
+        const mainCarousel = document.querySelector('.main-carousel .carousel'); //here
+        const mainCarouselNext = document.querySelector('.main-carousel #carousel-next');
+        const mainCarouselPrev = document.querySelector('.main-carousel #carousel-prev');
+
+        let mainCurrentSlide = 0;
+
+        mainCarouselNext.addEventListener('click', () => {
+            const mainCarousel = document.querySelector('.main-carousel .carousel');
+            mainCurrentSlide++;
+            if (mainCurrentSlide >= mainCarousel.children.length) {
+                mainCurrentSlide = 0;
+            }
+            mainCarousel.style.transform = `translateX(-${mainCurrentSlide * 100}%)`;
+        });
+
+        mainCarouselPrev.addEventListener('click', () => {
+            const mainCarousel = document.querySelector('.main-carousel .carousel');
+            mainCurrentSlide--;
+            if (mainCurrentSlide < 0) {
+                mainCurrentSlide = mainCarousel.children.length - 2;
+            }
+            mainCarousel.style.transform = `translateX(-${mainCurrentSlide * 100}%)`;
+        });
+
+        // like the story
+        const mainContainer = document.querySelector('.main-carousel .main-container');
+
+        
+        
+    </script>
+
+    {% if request.user.is_authenticated %}
+    <script>
+        function humanizeNumber(number) {
+            if (number >= 1e9) { // Billion
+                return (number / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+            } else if (number >= 1e6) { // Million
+                return (number / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+            } else if (number >= 1e3) { // Thousand
+                return (number / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+            } else {
+                return number.toString();
+            }
+        }
+
+        // love and loved the story
+        /*document.querySelector('.love-btn').addEventListener('click', () => {
+            
+                
+            // send a request to the server to love the story
+            fetch(`/story/{{ story.id }}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    const lovedBtn = document.querySelector('.loved-btn');
+                    lovedBtn.style.display = 'block';
+                    lovedBtn.style.opacity = 0;
+                    lovedBtn.style.transform = 'scale(0)';
+                    lovedBtn.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        lovedBtn.style.transform = 'scale(1)';
+                        lovedBtn.style.opacity = 1;
+                    }, 50);
+                } else {
+                    console.log('Error loving story');
+                }
+                return response.json();
+            }).then(json => {
+                const loveCounts = document.querySelectorAll('.love-count');
+                loveCounts.forEach(count => {
+                    //const currentCount = parseInt(count.textContent);
+                    //count.textContent = currentCount + 1;
+                    count.textContent = humanizeNumber(json.love_count); 
+                });
+            });
+            document.querySelector('.love-btn').style.display = 'none';
+        })
+
+        // unlove and unloved the story
+        document.querySelector('.loved-btn').addEventListener('click', () => {
+            
+            // send a request to the server to unloved the story
+            fetch(`/story/{{ story.id }}/unlike`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    const loveBtn = document.querySelector('.love-btn');
+                    loveBtn.style.display = 'block';
+                    loveBtn.style.opacity = 0;
+                    loveBtn.style.transform = 'scale(0)';
+                    loveBtn.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        loveBtn.style.transform = 'scale(1)';
+                        loveBtn.style.opacity = 1;
+                    }, 50);
+                
+                
+
+                } else {
+                    console.log('Error loving story');
+                }
+                return response.json();
+            }).then(json => {
+                const loveCounts = document.querySelectorAll('.love-count');
+                loveCounts.forEach(count => {
+                    //const currentCount = parseInt(count.textContent);
+                    //count.textContent = currentCount + 1;
+                    count.textContent = json.love_count === 0 ? '0' : humanizeNumber(json.love_count);
+                });
+            });
+            document.querySelector('.loved-btn').style.display = 'none';
+        })*/
+
+        // emoji picker in comments
+        /*const emojiBtn = document.querySelector('.emoji-btn');
+        const emojiPickerContainer = document.querySelector('.emoji-picker-container');
+
+        const emojiPicker = new EmojiPicker({
+        emojiable_selector: ['.type-comment-input'],
+        events: {
+            emojiPickerDidShow: function() {
+            emojiPickerContainer.style.display = 'block';
+            },
+            emojiPickerDidHide: function() {
+            emojiPickerContainer.style.display = 'none';
+            }
+        }
+        });
+
+            emojiBtn.addEventListener('click', () => {
+            emojiPicker.togglePicker();
+        });*/
+    </script>
+    <script>
+        const publishBtn = document.querySelector('.publish-btn');
+        const storyTitleElement = document.querySelector('#story-title');
+        const storyTextElement = document.querySelector('.story-text-content');
+        
+        // auto save status update
+        function showAutoSaveStatus() {
+            const statusElement = document.getElementById('auto-save-status');
+            statusElement.style.display = 'block'
+        }
+        function hideAutoSaveStatus() {
+            const statusElement = document.getElementById('auto-save-status');
+            statusElement.style.display = 'none';
+        }
+        function showSuccessCard() {
+            const successCard = document.createElement('div');
+            successCard.classList.add('success-card');
+            successCard.innerHTML = `
+                <div class="success-card-container">
+                    <img style='width: 40%; margin-inline: auto;' src="{% static 'assets/svgs/correct.svg' %}" alt="Check mark">
+                    <h2 style="color: #4a4a4a">Submitting story for <span style="color: #2699eb">review</span>...</h2></br>
+                    <p style="color: #4a4a4a">If all goes well, you'll be redirected shortly to the draft page in a few seconds.</p>
+                </div>
+            `;
+            document.body.appendChild(successCard);
+            
+            setTimeout(() => {
+                successCard.classList.add('show');
+            }, 50);
+
+            setTimeout(() => {
+                successCard.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(successCard);
+                }, 500);
+            }, 10000);
+        }
+        const submitStory = (status) => {
+            const storyTitle = storyTitleElement.textContent;
+            const storyText = storyTextElement.outerHTML;
+            
+            showAutoSaveStatus();
+            
+            fetch('/editor/{{story.id}}/save', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: storyTitle,
+                    text: storyText,
+                    status: status === 'review' ? 'r' : 'd'
+                })
+            }).then(response => {
+                if (response.ok) {
+                    hideAutoSaveStatus();
+                    //window.location.href = '/account';
+                }
+            });
+            
+        };
+
+        publishBtn.addEventListener('click', () => {
+            const storyTitle = storyTitleElement.textContent;
+            storyTextElement.setAttribute('contentenditable', false)
+            storyTextElement.classList.remove('ql-editor')
+            storyTextElement.classList.remove('ql-container')
+            storyTextElement.classList.remove('ql-snow')
+            showSuccessCard();
+            submitStory(status='review');
+            publishBtn.textContent = 'Publishing...'
+            setTimeout(() => {
+                window.location.href = '/story/{{story.id}}/review';
+            }, 10000);
+            
+        });
+
+        let timeoutId = null;
+        const debounce = (fn, delay) => {
+            return (...args) => {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                timeoutId = setTimeout(() => {
+                    fn(...args);
+                    timeoutId = null;
+                }, delay);
+            };
+        };
+
+        const debouncedSubmitStory = debounce(submitStory, 1000);
+
+        storyTitleElement.addEventListener('input', debouncedSubmitStory);
+        storyTextElement.addEventListener('input', debouncedSubmitStory);
+
+        const comfirmDeleteBeforeLeaving = () => {
+            fetch('/editor/{{story.id}}/delete', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            });
+            
+        }
+
+        window.addEventListener('beforeunload', (event) => {
+            if (!document.querySelector('.publish-btn').disabled) {
+                const storyTitle = document.querySelector('#story-title').textContent;
+                const storyText = document.querySelector('.story-text-content').outerHTML;
+                localStorage.setItem('storyTitle', storyTitle);
+                localStorage.setItem('storyText', storyText);
+                localStorage.setItem('storyId', '{{ story.id }}');
+            } else {
+                fetch(`/editor/{{story.id}}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        localStorage.removeItem('storyId');
+                    }
+                });
+            }
+        });
+
+        const addImageCoreFunctionality = () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = () => {
+                        const file = input.files[0];
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const img = document.createElement('img');
+                            img.src = reader.result;
+                            img.classList.add('story-image-small')
+                            const dot = document.createElement('div');
+                            dot.classList.add('dot');
+                            dot.appendChild(img);
+                            const removeSvg = document.createElement('img');
+                            removeSvg.src = "{% static 'assets/svgs/close-small.svg' %}";
+                            removeSvg.classList.add('remove-svg');
+                            dot.appendChild(removeSvg);
+                            document.querySelector('.dots-container').appendChild(dot);
+                            
+                            const carouselImage = document.createElement('img');
+                            carouselImage.src = reader.result;
+                            //carouselImage.classList.remove('story-image-small')
+                            
+                            carousel.appendChild(carouselImage)
+                            currentSlide = carousel.children.length -1
+
+                            updateSlide(currentSlide);
+                            updateDots();
+
+                            removeCarouselImage();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                }
+
+        // add images
+        const addImage = () => {
+            document.querySelector('.add-image').addEventListener('click', () => {
+                addImageCoreFunctionality()
+            })
+    }
+    
+    addImage()
+
+    document.querySelector('.default-editor-story-img').addEventListener('click', () => {
+        addImage()
+        addImageCoreFunctionality()
+    })
+
+    </script>
+    {% endif %}
+</body>
+</html>

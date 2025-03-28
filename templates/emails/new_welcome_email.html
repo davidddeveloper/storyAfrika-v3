@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to StoryAfrika</title>
+    <style>
+        html {
+            display: flex;
+            justify-content: center;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #4a4a4a;
+            max-width: 500px;
+            margin: 0;
+            padding: 0;
+            
+        }
+        header {
+            height: 250px;
+        }
+        header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 5px;
+        }
+        
+        main {
+            margin-top: 20px;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 25px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 50px;
+        }
+        h1 > span {
+            font-size: 40px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 40px;
+        }
+        section.vision {
+            margin-top: 100px;
+        }
+        div.follow-links {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+        }
+        div.contribute p, div.vision-text, div.follow-links p {
+            margin-left: 20px;
+            font-size: 17px;
+        }
+        .storyafrika {
+            color: #f9ad59;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img class="desktop" src="https://res.cloudinary.com/dgns2pj30/image/upload/w_1000,ar_16:9,c_fill,g_auto,e_sharpen/v1734106697/welcome_email_ffppjx.png" alt="welcome to storyafrika image">
+    </header>
+    <main>
+        <h1><span>H</span>i {{user.username}},</h1>
+        <p>I'm really excited to have you here at StoryAfrika. You're now part of a Journey of like-minded individuals working to build the biggest writing platform for Africans.</p>
+
+        <h2>Here's how you can contribute to this Journey: </h2>
+        <div class="contribute">
+            <p>First of, write your own Stories.</p>
+            <p>Spread the word, invite friends and families to <span class="storyafrika">StoryAfrika.</span></p>
+            <p>Share our stories on all social media platforms.</p>
+        </div>
+
+        <p> Thank you in advance for being such a beacon of support already.</p>
+        <p>Continue reading if you want to know in details what my vision is.</p>
+        <p>Otherwise,</p>
+        <p>I am super happy to have you here.</p>
+
+        <h2>Welcome to <span class="storyafrika">StoryAfrika.</span></h2>
+        <p>-- David</p>
+
+        <section class="vision">
+            <p>Hey! You made it here,</p>
+            <p>alright let's talk about my vision for <span class="storyafrika">StoryAfrika.</span></p>
+            <h2>The vision is simple:</h2>
+            <div class="vision-text">
+                <p>The Story of Africans is scattered across the inter-web.</p>
+                <p>Africa does not have a HOME on the internet</p>
+                <p>-- that's why we are creating StoryAfrika - the home of Africans</p>
+                <p>We want to tell inspiring Stories, give fellow Africans the road map to success and grow together.</p>
+            </div>
+            <p>So you see, you're part of an idea that's huge</p>
+            <p>-- it's a growth that you're definitely part of</p>
+            <p>Howerver, there's a whole lot of work and sleepless night already and there's more work to be done to get there.</p>
+            <p>That's why you will celebrate each and every millstones with us.</p>
+            <p>We will celebrate users count, likes count, adding new features to the software and much more...</p>
+            <p>So yeah, we are going to have fun -- lots of it.</p>
+            <h2 style="margin-bottom: 50px;">Welcome again {{user.username}},</h2>
+            <p>Feel free to follow <span class="storyafrika">StoryAfrika</span> on:</p>
+            <div class="follow-links">
+                <p><a href="https://linkedin.com/company/StoryAfrika">Linkedin</a></p>
+                <p><a href="https://x.com/StoryAfrika">Twitter</a></p>
+                <!--<p><a href="https://facebook.com/page/StoryAfrika">Facebook</a></p>
+                <p><a href="https://youtube.com/StoryAfrika">YouTube</a></p>-->
+            </div>
+            <p>Best,</p>
+            <p style="margin-top: -20px;">David.</p>
+            <p style="margin-top: -20px;">Founder @ StoryAfrika</p>
+        </section>
+    </main>
+</body>
+</html>

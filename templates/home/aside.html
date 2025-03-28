@@ -1,0 +1,384 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aside header</title>
+    <style>
+        button.aside_header_body, button.aside_header_body:active, button.aside_header_body:focus {
+            border: 0;
+            outline: 0;
+        }
+        button.aside_header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 20px;
+            
+        }
+
+        aside.story-aside {
+            padding-block: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        aside.story-aside button, aside.story-aside button:active, aside.story-aside button:focus {
+            border: 0;
+            outline: 0;
+            background-color: transparent;
+        }
+        aside.story-aside .aside_header {
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        aside.story-aside .related-stories-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        aside.story-aside .related-stories, aside.story-aside .simillar-writers {
+            padding-inline: 20px;
+        }
+
+        aside.story-aside div {
+            padding-inline: 25px;
+        }
+
+        aside.story-aside .from-title {
+            font-weight: bolder;
+            font-size: small;
+
+        }
+
+        aside.story-aside .related-story {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        aside.story-aside .related-story header {
+            display: flex;
+            align-items: center;
+            column-gap: 15px;
+        }
+        aside.story-aside .related-story img {
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        aside.story-aside .related-story p.story-title {
+            font-size: 14px;
+            color: #4A4A4A;
+            margin-top: 5px;
+        }
+        aside.story-aside .related-story p.username {
+            color: #000;
+        }
+        aside.story-aside .related-story header, aside.story-aside .related-story img {
+            height: 30px; width: 30px; border-radius: 50%;
+        }
+
+        aside.story-aside .also-by-user {
+            margin-top: 50px;
+            border-top: 2px solid #4A4A4A;
+            padding-top: 50px;
+        }
+
+        .also-by-user-stories-container .also-by-user-story header img {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            object-fit: cover;
+            flex-shrink: 0;
+            margin-top: 0;
+        }
+
+        .also-by-user-stories-container .also-by-user-story header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            
+        }
+        .also-by-user-stories-container .also-by-user-story header p {
+            font-size: 16px;
+            font-weight: bolder;
+        }
+
+        aside.story-aside .simillar-writers {
+            margin-top: 40px;
+
+        }
+
+        aside.story-aside .simillar-writers header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        aside.story-aside .simillar-writers header {
+            display: flex;
+            gap:  5px;
+            align-items: start;
+
+        }
+
+        aside.story-aside .simillar-writers header h4 {
+            margin: 0;
+        }
+
+        aside.story-aside .simillar-writers header .content button {
+            cursor: pointer;
+            color: #2699eb
+        }
+
+        aside.story-aside { 
+            overflow: hidden;
+        }
+        /* for simillar writer scrolling horizontally */
+        aside.story-aside .simillar-writers-profile-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 0 20px;
+            -ms-overflow-style: auto; /* IE and Edge */
+            scrollbar-width: auto; /* Firefox */
+        }
+
+        .simillar-writers-profile-container::-webkit-scrollbar {
+            display: block; /* Chrome, Safari and Opera */
+        }
+
+        .simillar-writers-profile-container article {
+            flex-shrink: 0;
+            user-select: none;
+            max-width: 250px;;
+        }
+        .featuring-story-text-container {
+            position: absolute;
+            inset: 0;
+            background-color: #fff;
+            padding: 20px;
+            
+
+        }
+        .featuring-story-text-container .featuring-story-text {
+            color: #4a4a4a;
+            font-size: 18px;
+            line-height: 50px;
+        }
+        .join-us-call-to-action {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 0px;
+            padding-inline: 20px;
+        }
+        .join-us-call-to-action .question-call-to-action {
+            align-self: flex-start;
+            margin-left: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .join-us-call-to-action .call-to-action-btn {
+            background-color: #2699eb;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .join-us-call-to-action .call-to-action-btn:focus {
+            background-color: #2699eb;
+        }
+        .join-us-call-to-action .call-to-action-btn:hover {
+            background-color: #053b61;
+        }
+        .join-us-call-to-action .answer-call-to-action {
+            font-family: 'Baloo 2', Arial, Helvetica, sans-serif;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body class="aside_header-body">
+    <aside class="right-part story-aside">
+        <!--<header class="aside_header">
+            <button style="cursor: pointer;"><img src="{% static '/assets/svgs/logo.svg' %}"></img></button>
+            <button style="cursor: pointer;"><a href="#" style="text-decoration: none;"><img src="{% static '/assets/svgs/write-icon.svg' %}" alt=""></a></button>
+        </header>-->
+        {% if request.user.is_authenticated %}
+        <section class="related-stories" style="margin-top: 40px; margin-inline: 30px;">
+            <h3 class="from-title">Your recent likes</h3>
+            {% if stories_liked %}
+            <section class="related-stories-container">
+                {% for story in stories_liked %}
+                <article class="related-story">
+                    <header class="">
+                        <img src="{{ story.writer.avatar }}" alt="" srcset="">
+                        <p class="username">{{ story.writer.user.username}}</p>
+                    </header>
+                    <h4 class="story-title"><a href="{% url 'app:build_story_detail' story.slug story.id %}" style="text-decoration: none; color: #4a4a4a">{{ story.title }}</a></h4>
+                </article>
+                {% empty %}
+                    <p>Related stories will be displayed here</p>
+                    
+                {% endfor %}
+                <!--<article class="related-story">
+                    <header class="">
+                        <img src="{% static '/assets/images/books.jpg' %}" alt="" srcset="">
+                        <p class="username">Ese</p>
+                    </header>
+                    <h4 class="story-title"><a href="#" style="text-decoration: none; color: #4a4a4a">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Alias a rerum, corporis ea molestiae suscipit error adipisci ut quia expedita!</a></h4>
+                </article>-->
+
+            </section>
+            {% endif %}
+        </section>
+        {% else %}
+        <section class="join-us-call-to-action">
+            <p class="question-call-to-action">Why Join us?</p>
+            <h2 class="answer-call-to-action">We are building the biggest writing platform for Africans.</h2>
+            <button class="call-to-action-btn">Join Us Now</button>
+        </section>
+        {% endif %}
+        <section class="also-by-user mt-[40px]">
+            <h3 class="from-title" style=" margin-inline: 20px">Previously Featured Stories</h3>
+            {% if other_stories_by_writer %}
+            <section class="also-by-user-stories-container">
+                {% for other_story_by_writer in other_stories_by_writer %}
+                <article class="also-by-user-story">
+                    <header class="" style="padding-inline: 20px;">
+                        <img src="{{ other_story_by_writer.images.first.image.url }}" alt="" srcset="">
+                        <h4 class="story-title"><a href="{% url 'app:build_story_detail' other_story_by_writer.slug other_story_by_writer.id %}" style="text-decoration: none; color: #000">{{ other_story_by_writer.title }}</a></h4>
+                    </header>
+                </article>
+                {% empty %}
+                    <p>Other stories by {{ story.writer.user.username }} will be displayed here</p>
+                {% endfor %}
+            </section>
+            {% endif %}
+        </section>
+        <section class="simillar-writers mt-[40px]" style="margin-inline: 30px; overflow-x: auto;">
+            <h3 class="from-title">Top Writers</h3>
+            {% if top_writers %}
+            <section class="simillar-writers-profile-container">
+                {% for top_writer in top_writers %}
+                <article class="">
+                    <header class="">
+                        <img src="{{ top_writer.avatar }}" alt="" srcset="">
+                        <div class="content">
+                            <h4><a href="#" style="text-decoration: none; color: black; font-weight: bold;">{% if top_writer.user.first_name and top_writer.user.last_name %} {{ top_writer.user.first_name }} {{ top_writer.user.last_name }} {% else %} {{top_writer.user.username}} {% endif %}</a> <!--<button><span>➕</span>Follow</button>--></h4>
+                            <h4 class="story-title"><a href="#" style="text-decoration: none; color: #4a4a4a;">{{top_writer.short_bio}}</a></h4>
+                        </div>
+                    </header>
+                </article>
+                {% empty %}
+                    <p>Simillar writers will be displayed here</p>
+                {% endfor %}
+                <!--<article class="">
+                    <header class="">
+                        <img src="{% static '/assets/images/books.jpg' %}" alt="" srcset="">
+                        <div class="content">
+                            <h4><a href="#" style="text-decoration: none; color: black; font-weight: bold;">Lukman Aufbau</a> <button><span>➕</span>Follow</button></h4>
+                            <p class="story-title"><a href="#" style="text-decoration: none; color: #4a4a4a;">I like sharing the fun experiences growing up in Kabala, Nigeria!</a></p>
+                        </div>
+                    </header>
+                </article>
+                <article class="">
+                    <header class="">
+                        <img src="{% static '/assets/images/books.jpg' %}" alt="" srcset="">
+                        <div class="content">
+                            <h4><a href="#" style="text-decoration: none; color: black; font-weight: bold;">Lukman Aufbau</a> <button><span>➕</span>Follow</button></h4>
+                            <p class="story-title"><a href="#" style="text-decoration: none; color: #4a4a4a;">I like sharing the fun experiences growing up in Kabala, Nigeria!</a></p>
+                        </div>
+                    </header>
+                </article>-->
+            </section>
+            {% endif %}
+        </section>
+
+        {% if featuring_story %}
+        <div class="featuring-story-text-container">
+            <p class="featuring-story-text" id="featuring-story-text">
+            </p>
+            
+        </div>
+        {% endif %}
+    </aside>
+    {% if featuring_story %}
+    <script>
+        const textElement = document.getElementById('featuring-story-text');
+        const htmlString = `{{featuring_story.intro_to_story|safe}}`;
+        const readMoreBtn = document.createElement('button');
+        readMoreBtn.classList.add('read-more-btn');
+        readMoreBtn.textContent = 'Read More';
+        readMoreBtn.addEventListener('click', () => {
+            window.location.href = `{{featuring_story.get_absolute_url}}`
+        });
+
+        // Create a temporary container to parse the HTML
+        const container = document.createElement('div');
+        container.innerHTML = htmlString;
+
+        // Recursive function to process and render nodes incrementally
+        function typeWriterEffect(node, parentElement, callback) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            // Render text content character by character
+            const textContent = node.textContent;
+            let charIndex = 0;
+
+            const intervalId = setInterval(() => {
+            if (charIndex < textContent.length) {
+                parentElement.appendChild(document.createTextNode(textContent[charIndex]));
+                charIndex++;
+            } else {
+                clearInterval(intervalId);
+                if (callback) callback();
+            }
+            }, 100);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // Create the element and copy attributes
+            const newElement = document.createElement(node.tagName);
+            Array.from(node.attributes).forEach(attr => {
+            newElement.setAttribute(attr.name, attr.value);
+            });
+            parentElement.appendChild(newElement);
+
+            // Process the child nodes of the element
+            processNextNode(node.firstChild, newElement, () => {
+            if (callback) callback();
+            });
+        } else {
+            if (callback) callback();
+        }
+        }
+
+        function processNextNode(node, parentElement, callback) {
+        if (node) {
+            typeWriterEffect(node, parentElement, () => {
+            processNextNode(node.nextSibling, parentElement, callback);
+            });
+        } else if (callback) {
+            callback();
+        }
+        }
+
+        // Start processing from the first child node of the container
+        processNextNode(container.firstChild, textElement, () => {
+        // Add the "Read More" button once everything is rendered
+        textElement.innerHTML += `<a href="{% url 'app:build_story_detail' featuring_story.story.slug featuring_story.story.id %}">Read More</a>`;
+        });
+
+
+
+
+    </script>
+    {% endif %}
+</body>
+</html>

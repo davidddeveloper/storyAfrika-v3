@@ -1,0 +1,7 @@
+<div class="flex items-center justify-center gap-5">
+    <img class="block rounded-full w-[60px] h-[60px] text-black" src="{{ request.user.profile.avatar }}" alt="avatar for the user">
+    <div>
+        <h1 class="text-base font-bold">{{ request.user.first_name|default_if_none:"" }} {{ request.user.last_name|default_if_none:"" }}</h1>
+        <p class="text-sm text-lightgray ml-1">@{{ request.user.username }}</p>
+    </div>
+</div>

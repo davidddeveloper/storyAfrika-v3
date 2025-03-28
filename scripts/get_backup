@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#  a Bash script that downloads a backup and decompresses it to sql file.
+
+
+name="$1"
+
+# Download the backup file
+curl -o "$(date +"%d-%m-%y").tar.gz" "https://storyafrika.live/backups/$name"
+
+# Extract the backup file
+tar -zxvf "$(date +"%d-%m-%y").tar.gz"
+
+sql_file="backup.sql"
+
+# Check if the SQL file exists
+if [ -f "$sql_file" ]; then
+    # Import the SQL file into MySQL
+    cat "$sql_file" | sudo mysql -u root -p
+    echo "Done!"
+else
+    echo "SQL file not found: $sql_file"
+fi

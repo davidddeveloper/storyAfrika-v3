@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to StoryAfrika</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #ff9900;
+      color: #fff;
+      text-align: center;
+      padding: 20px 10px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .content h2 {
+      color: #333;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+    }
+    .cta-button {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 10px 20px;
+      background: #ff9900;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .cta-button:hover {
+      background: #e88d00;
+    }
+    .footer {
+      text-align: center;
+      background: #333;
+      color: #fff;
+      padding: 10px;
+    }
+    .footer a {
+      color: #ff9900;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <img style="height: 280px; width: 100%; object-fit: cover; margin-bottom: 5px;" src="https://raw.githubusercontent.com/davidddeveloper/storyAfrika/refs/heads/main/email-welcome-to-storyafrika-image.png" alt="Welcome to StoryAfrika">
+      <h1>Welcome to StoryAfrika, {{user.username}}!</h1>
+    </div>
+    <div class="content">
+      <h2>Hi {{user.username}},</h2>
+      <p>Thank you for joining us. We are super happy to have you as part of this journey. StoryAfrika is the biggest writing platform for Africans, a place where stories live and thrive.</p>
+      <p>We envision a community where Africans share their stories with the world, connect with others, and inspire each other to grow together.</p>
+      <h3>What You Can Expect:</h3>
+      <ul>
+        <li>Weekly inspiring stories from African writers, including your own.</li>
+        <li>Monthly featured stories curated just for you.</li>
+      </ul>
+      <p>Help us grow by sharing stories on social media and encouraging your friends and family to join us.</p>
+      <a href="https://storyafrika.live" class="cta-button">Explore StoryAfrika</a>
+    </div>
+    <div class="footer">
+      <p>Follow us on <a href="#">Facebook</a>, <a href="#">Twitter</a>, and <a href="#">Instagram</a>.</p>
+      <p>© 2024 StoryAfrika. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

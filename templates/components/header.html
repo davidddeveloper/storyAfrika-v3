@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header with Slider</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            position: relative;
+        }
+
+        .categories-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            scrollbar-width: none; /* For Firefox */
+            padding: 0 20px;
+        }
+
+        .categories-container::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Edge */
+        }
+
+        .category {
+            white-space: nowrap;
+            font-size: 16px;
+            color: #4A4A4A;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            color: #000;
+        }
+
+        .category.active {
+            color: #000;
+            font-weight: bold;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-section .profile-img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .right-section .profile-img {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .arrow {
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .arrow:hover {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-width: 768px) {
+            .arrow {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Left Arrow -->
+        <button class="arrow left-arrow"><img src="{% static 'assets/svgs/prev.svg' %}" alt=""></button>
+        
+        <!-- Scrollable Categories -->
+        <div class="categories-container">
+            <span class="category active">For you</span>
+            <span class="category">Education</span>
+            <span class="category">Business</span>
+            <span class="category">Life</span>
+            <span class="category">Technology</span>
+        </div>
+
+        <!-- Right Section -->
+        <div class="right-section">
+            <button class="arrow right-arrow"><img src="{% static 'assets/svgs/next.svg' %}" alt=""></button>
+            {% if request.user.is_authenticated %}
+            <img src="{% static 'assets/svgs/search-icon.svg' %}" alt="Search Icon" class="search-icon">
+            <img src="https://picsum.photos/200/300" alt="Profile" class="profile-img">
+            {% else %}
+            <h3 style="flex-shrink: 0;">Join Us</h3>
+            <img style="cursor: pointer;" src="{% static '/assets/svgs/logo.svg' %}"></img>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Enable slider functionality for smaller screens
+        const categoriesContainer = document.querySelector('.categories-container');
+        const leftArrow = document.querySelector('.left-arrow');
+        const rightArrow = document.querySelector('.right-arrow');
+
+        leftArrow.addEventListener('click', () => {
+            categoriesContainer.scrollBy({ left: -150, behavior: 'smooth' });
+        });
+
+        rightArrow.addEventListener('click', () => {
+            categoriesContainer.scrollBy({ left: 150, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

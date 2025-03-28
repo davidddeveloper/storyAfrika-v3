@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style-two.css' %}">
+    
+    <title>StoryAfrika | Our Story</title>
+
+    <meta name="title" content="storyafrika - Our Story - Success Stories and Experiences of Everyday Africans">
+    <meta name="description" content="This is how Storyafrika began: A man named Balla shared with me how he grew up in Kabala, in an extended family with 17 siblings. He recounted the activities they engaged in, the games they played as children, and how his father managed to protect all his kids during the war.">
+    <meta name="keywords" content="{% for topic in story.topics.all %}{{ topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %} African stories, African experiences, African achievements, StoryAfrika">
+    <meta property="og:title" content="storyafrika - Success Stories and Experiences of Everyday Africans">
+    <meta property="og:description" content="This is how Storyafrika began: A man named Balla shared with me how he grew up in Kabala, in an extended family with 17 siblings. He recounted the activities they engaged in, the games they played as children, and how his father managed to protect all his kids during the war.">
+    <meta property="og:url" content="{{request.build_absolute_uri}}">
+    <meta property="og:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="storyafrika - Success Stories and Experiences of Everyday Africans">
+    <meta name="twitter:description" content="This is how Storyafrika began: A man named Balla shared with me how he grew up in Kabala, in an extended family with 17 siblings. He recounted the activities they engaged in, the games they played as children, and how his father managed to protect all his kids during the war.">
+    <meta name="twitter:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:creator" content="@{{story.writer.user.username}}">
+    <meta name="twitter:site" content="@StoryAfrika">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- google oAuth2 client id -->
+    <meta name="google-signin-client_id" content="25158261190-9emalbugfgsvbn9cv7fao3vp6kmi3h37.apps.googleusercontent.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="Cross-Origin-Opener-Policy" content="">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    {% include 'components/new-header.html' %}
+    <section class=" mt-20 px-5 md:px-35 pb-20">
+        <header class="w-full relative">
+            <div class="container mx-auto md:mt-40 ">
+                <img class="block absolute top-0 right-0 h-[200px] object-cover md:pr-[18%]" src="/static/assets/svgs/tree.svg" alt=""/>
+                <h2 class="text-[50px] md:text-[60px] w-[80%] md:w-[505px] md:mx-auto pl-7 md:pl-0 ">Africans have a <span class="text-lightblue">unique</span> story to tell</h2>
+                <img class="block absolute bottom-3 md:top-[50%] md:pl-[20%] sm:left-0  sm:h-[120px]" src="/static/assets/svgs/tree.svg" alt=""/>
+            </div>
+        </header>
+        <article class="">
+            <p class="container mx-auto text-[30px] mt-[80px] text-extra-lightgray md:text[40px] md:mx-auto">
+            Storyafrika is a platform showcasing the real-life experiences and stories of individual Africans, highlighting their upbringing, everyday successes, and much more.
+
+            </p>
+           <a href="#about"> <img class=" hidden md:block mx-auto mt-10 h-200px w-200px" src="/static/assets/svgs/down1.svg" alt="down" /></a> 
+        </article>
+        <article id ="about" class="container mx-auto max-w-md md:mx-auto  md:top-20">
+            <h2 class="block  mt-[80px] mb-[80px] text-[50px] text-white  md:top-60 w-[292px] h-[122px]">How we began</h2>
+            <p class="text-[30px] text-extra-lightgray  px-auto ">This is how Storyafrika began: A man named Balla shared with me how he grew up in Kabala, in an extended family with 17 siblings. He recounted the activities they engaged in, the games they played as children, and how his father managed to protect all his kids during the war.</p>
+            <p class="text-[30px] text-extra-lightgray mt-[20px]">This fascinating story allowed me to vividly imagine his experiences, and I wanted others to hear it as well. Thus, the idea of creating a platform dedicated to sharing the stories and everyday experiences of people like Balla was born.</p>
+            <div class="flex flex-row w-full h-[120px] mt-10 mb-20 md:w-[500px] md:mb-10">
+                <img class=" flex-shrink object-cover" src="/static/assets/images/davidconteh.png" alt=""/>
+                <div class="ml-5 md:ml-10">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-[16px] text-white">David Conteh</h3>
+                        <div class='flex'>
+                            <img class="h-[17px] w-[17px] mr-3" src="/static/assets/svgs/linkedin.svg" alt=""/>
+                            <img class="h-[17px] w-[17px] mr-3 bg-white" src="/static/assets/svgs/x.svg" alt=""/>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-white text-[12px]">Founder and CEO</p>
+                    <p class="mt-2 text-[14px] text-white">Grew up in Sierra Leone. Now a software developer, shaping the future online</p>
+                </div>
+            </div>
+        </article>
+        <a class="hidden md:block text-white hover:text-lightblue fixed bottom-10 right-[10%] h-[22px] z-40 w-[82px] cursor-pointer" href="/about-us">Know us?</a>
+        
+    </section>
+</body>
+</html>

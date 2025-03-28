@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Editor</title>
+  <style>
+    body #editor-body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .story-section {
+      grid-column: 1;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .editor-toolbar {
+      grid-column: 2;
+      border-left: 1px solid #ddd;
+      padding-left: 15px;
+    }
+
+    .editor-toolbar input, .editor-toolbar select {
+      border: 2px solid lightgray;
+      border-radius: 5px;
+    }
+
+    .editor-toolbar input:focus, .editor-toolbar select:focus {
+      outline: none;
+      border: 0;
+    }
+
+    .editor-toolbar input:focus, .editor-toolbar select:focus {
+      border-bottom: 2px solid lightgray;
+    }
+
+    .font-title, .more-tools-title {
+      font-weight: bolder;
+      font-size: 12px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .font-item-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .font-item-container #font-size {
+      width: 50px;
+    }
+
+    .editor-toolbar .font-weight {
+      margin-top: 15px;
+    }
+
+    .editor-toolbar .text-type button,
+    .editor-toolbar .text-type button:focus,
+    .editor-toolbar .text-type button:active,
+    #insert-link-btn, #insert-link-btn:focus {
+      background: none;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+    }
+
+    .image-insertion-container #image-insert {
+      border: 0;
+      outline: 0;
+    }
+
+    .story-section h1,
+    .story-section p {
+      margin: 0 0 15px;
+      cursor: pointer;
+    }
+
+    .story-section img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .editor-toolbar section {
+      margin-bottom: 20px;
+    }
+
+    .editor-toolbar input[type="number"],
+    .editor-toolbar button {
+      padding: 5px;
+      margin-top: 10px;
+    }
+
+    .editor-toolbar select {
+      padding: 5px;
+      margin-top: 10px;
+    }
+
+    .editor-toolbar img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
+    }
+
+    footer ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    footer ul li {
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="story-section">
+  <h1 id="title" contenteditable="false">A Journey Through Colors by Zola Smith</h1>
+  <p id="subtitle" contenteditable="false">The story of how she sold her painting for $500,000</p>
+  <img id="story-image" src="assets/images/art.jpg" alt="Art Brushes" />
+  <p id="content" contenteditable="false">
+    Zola Robinson had always believed that art was more than a medium of expression; it was a tool of liberation.
+    Growing up in a modest neighborhood, her passion for painting blossomed as she experimented with vibrant colors
+    that told stories of struggle, joy, and resilience.
+  </p>
+</main>
+
+<aside class="editor-toolbar">
+    <h2>storyafrika</h2>
+
+    <!-- Font Settings -->
+    <section class="top-tools" style="border-bottom: 1px solid #ddd;">
+        <label class="font-title" for="font-select">Font</label>
+        <div class="font-item-container">
+          <select id="font-select">
+            <option value="Inter">Inter</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+          </select>
+            <label for="font-size" hidden>Font Size</label>
+            <input type="number" id="font-size" value="26" />
+        </div>
+        
+        <select id="font-weight">
+          <option value="normal">Regular</option>
+          <option value="600">Medium</option>
+          <option value="bold">Bold</option>
+          <option value="bolder">Extra Bold</option>
+        </select>
+
+        <div class="text-type">
+          <button style="font-size: 25px; font-weight: bolder;" class="h1">Heading</button>
+          <button class="p" style="color: #4a4a4a; font-size: 18px;"onclick="insertParagraph()"><p>Paragraph</p></button>
+        </div>
+        <!--<div>
+          <input type="radio" name="font-weight" id="regular" value="normal" checked />
+          <label for="regular">Regular</label>
+          <input type="radio" name="font-weight" id="bold" value="bold" />
+          <label for="bold">Bold</label>
+        </div>-->
+    </section>
+
+    <!-- Link Tools -->
+    <section>
+        <h3 class="more-tools-title">More tools</h3>
+
+        <div>
+          <label for="create-link" style="color: #4a4a4a; display: block; margin-bottom: 5px;">
+            Create link <button id="insert-link-btn" style="font-weight: bold;">Insert</button>
+          </label>
+          <div style="display: flex; gap: 5px;">
+            <input type="text" id="create-link" style="padding-block: 5px; width: 90px;" placeholder="create link">
+            <input type="text" id="create-link" style="padding-block: 5px; width: 90px;" placeholder="display text">
+          </div>
+        </div>
+    </section>
+
+    <!-- Image Insertion -->
+    <section class="image-insertion-container">
+        <label for="image-insert">Insert Image</label>
+        <input type="file" id="image-insert" accept="image/*" />
+        <img id="image-preview" src="#" alt="Preview" style="display:none;" />
+    </section>
+
+    <footer>
+      <ul>
+          <li><a>Help</a></li>
+          <li><a>About</a></li>
+          <li><a>Privacy</a></li>
+          <li><a>Terms and conditions</a> </li>
+          <li><a>Contact us</a></li>
+      </ul>
+      </footer>
+    </aside>
+
+    
+
+    <script>
+      let activeElement = null;
+
+      // Activate editing for clicked element
+      document.querySelectorAll("#title, #subtitle, #content").forEach((element) => {
+          element.addEventListener("click", () => {
+              if (activeElement) activeElement.contentEditable = "false";
+                  activeElement = element;
+                  element.contentEditable = "true";
+                  element.focus();
+              });
+      });
+
+      // Update font family
+      document.getElementById("font-select").addEventListener("change", (e) => {
+          if (activeElement) {
+              activeElement.style.fontFamily = e.target.value;
+          }
+      });
+
+      // Update font weight
+      document.getElementById("font-weight").addEventListener("change", (e) => {
+          if (activeElement) {
+              activeElement.style.fontWeight = e.target.value;
+          }
+      });
+
+      // Update font size
+      document.getElementById("font-size").addEventListener("input", (e) => {
+          if (activeElement) {
+          activeElement.style.fontSize = `${e.target.value}px`;
+          }
+      });
+
+      // Update font weight
+      document.querySelectorAll('input[name="font-weight"]').forEach((radio) => {
+          radio.addEventListener("change", (e) => {
+          if (activeElement) {
+              activeElement.style.fontWeight = e.target.value;
+          }
+          });
+      });
+
+      // Image insertion
+      document.getElementById("image-insert").addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+              document.getElementById("story-image").src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+          }
+      });
+
+      // Insert Paragraph
+      function insertParagraph() {
+        const newParagraph = document.createElement('p');
+        newParagraph.contentEditable = 'true';
+        newParagraph.textContent = 'New Paragraph...';
+        document.querySelector('.story-section').appendChild(newParagraph);
+      }
+    </script>
+
+    </body>
+</html>

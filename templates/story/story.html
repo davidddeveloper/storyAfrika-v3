@@ -1,0 +1,1118 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Charset and Viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title and Description -->
+    <title>StoryAfrika | {{ story.title }}</title>
+    <meta name="title" content="StoryAfrika - {{ story.title }}">
+    <meta name="description" content="{{ story.plain_text|truncatechars:200 }}">
+
+    <!-- Keywords -->
+    <meta name="keywords" content="{% for topic in story.topics.all %}{{ topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %}, African stories, African experiences, African achievements, StoryAfrika">
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="StoryAfrika - {{ story.title }}">
+    <meta property="og:description" content="{{ story.plain_text|truncatechars:200 }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{{ story.images.first.image }}">
+    <meta property="og:site_name" content="StoryAfrika">
+
+    <!-- Twitter Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StoryAfrika - {{ story.title }}">
+    <meta name="twitter:description" content="{{ story.plain_text|truncatechars:200 }}">
+    <meta name="twitter:image" content="{{ story.images.first.image }}">
+    <meta name="twitter:creator" content="@{{ story.writer.user.username }}">
+    <meta name="twitter:site" content="@StoryAfrika">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo.jpg' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="{% url 'app:story_detail' username=story.writer.user.username slug=story.slug %}">
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet">
+
+    <!-- Styles and Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.3.3/tailwind.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/emoji-button.min.js" defer></script>
+    <!-- Quill --> 
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <!-- Additional Meta for SEO -->
+    <meta name="author" content="{{ story.writer.user.get_full_name }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            background-color: #fff !important;
+        }
+        .left-part {
+            flex: 1;
+        }
+        aside {
+            flex: 0 0 30%;
+            border-left: 2px solid #4a4a4a;
+        }
+        .container {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            /*height: 100vh;*/
+        }
+
+        .left-part .content {
+            margin-top: 50px;
+        }
+        .left-part .content h2 {
+            font-size: 35px; font-weight: bold; width: 80%; padding-left:30px;
+        }
+
+        .left-part .content h2, .left-part .content div.story-text,
+        aside.right-part h4, aside.right-part h3 {
+            font-family: 'Baloo 2', cursive;
+            line-height: 40px;
+        }
+
+        .left-part .content div.story-text {
+            line-height: 25px;
+            margin-top: 30px; color: #4A4A4A; padding-inline: 25px; font-size: 20px;
+        }
+
+        aside.right-part h3 {
+            font-weight: bolder;
+            line-height: 20px;
+        }
+
+        aside.right-part h4 {
+            line-height: 20px;
+            font-weight: normal;
+            margin-top: 0;
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            flex-shrink: 0;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        section.content {
+            padding-inline: 35px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                width: 100%;
+                height: 250px;
+            }
+        }
+
+        .carousel {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            z-index: 10;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+            .left-part{
+                width: 100%;
+            }
+            aside{
+                width: 100%;
+                flex: 1;
+                border-left: 0;
+                padding-inline: 0;
+                border-top: 2px solid black;
+                margin-top: 60px;
+            }
+            .related-stories, .also-by-user, .simillar-writers {
+                padding-inline: 30px;
+                box-sizing: border-box;
+            }
+            .carousel {
+                width: 100%;
+                height: 250px;
+            }
+            .listen-container.bottom {
+                left: 50% !important;
+            }
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            display: block;
+            object-fit: cover;
+            object-position: 40% 20%;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            border-radius: 10px;
+            user-select: none;
+            background-repeat: repeat;
+        }
+
+        .main-container:hover img.story-carousel-image {
+            transform: scale(1.1);
+            filter: brightness(0.5);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            width: 100%;
+            /*height: 100%;*/
+
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: transparent;
+        }
+
+        
+
+        .main-container:hover .carousel-nav, .main-container:hover .profile-container {
+            opacity: 1;
+            z-index: 20;
+            user-select: none;
+            
+        }
+
+        .carousel-nav button {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .carousel-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-nav .love-btn:hover, .carousel-nav .loved-btn:hover {
+            background-color: transparent;
+            transform: scale(1.1, 1.1);
+        }
+
+        .carousel-nav .love-btn, .carousel-nav .loved-btn {
+            position: relative;
+        }
+
+        .carousel-nav .love-count {
+            position: absolute;
+            top: -3px;
+            left: 55%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            color: black;
+            opacity: 0;
+        }
+
+        .carousel-nav .love-btn:hover .love-count, .carousel-nav .loved-btn:hover .love-count {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .carousel-nav .loved-btn .love-count {
+            color: #fff;
+        }
+
+        .profile-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            left: 40%;
+            transform: translateX(-40%);
+            flex-shrink: 0;
+        }
+        .profile-image {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white !important;
+            flex-shrink: 0;
+            gap: 15px;
+        }
+        .profile-info p:first-child {
+            font-weight: bold;
+        }
+        .profile-info p:nth-child(2) {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        .profile-info .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+
+        @media (max-width: 500px) {
+            .profile-container {
+                left: 30%;
+                transform: translateX(-30%);
+            }
+
+            .main-container .carousel-nav, .main-container .profile-container {
+                opacity: 1;
+                z-index: 20;
+                user-select: none;
+            }
+
+            .main-container img.story-carousel-image {
+                transform: scale(1.1);
+                filter: brightness(0.5);
+            }
+            .left-part .content h2 {
+                font-size: 30px;
+            }
+            section.content {
+                padding-inline: 15px;
+            }
+
+            .listen-container.bottom {
+                left: 50% !important;
+            }
+            
+        }
+
+        @media (max-width: 370px) {
+            .profile-container {
+                left: 20%;
+                transform: translateX(-20%);
+            }
+            section.content {
+                padding-inline: 10px;
+            }
+            
+        }
+
+        @media (max-width: 900px) {
+            .left-part {
+            }
+        }
+    
+        /* MODAL TO SHOW IMAGES */
+        .image-container {
+          position: relative;
+          display: inline-block;
+        }
+        
+        /* Style the modal */
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.4);
+          z-index: 100;
+        }
+        
+        /* Style the modal content */
+        .modal-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 700px;
+        }
+        
+        /* Style the close button */
+        .close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+        
+        .close:hover,
+        .close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .ql-tooltip {
+            display: none;
+        }
+
+        /* Listen to the story styles */
+        .listen-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .listen-container.bottom {
+            display: none;
+        }
+
+        .listen-container.bottom {
+            position: fixed;
+            bottom: 4%;
+            left: 35%;
+            transform: translateX(-50%);
+            z-index: 30;
+            background-color: #fefefe;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        
+        }
+
+        .listen-container p {
+            color: #4a4a4a;
+        }
+
+        .listen-btn, .listen-pause-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .listen-svg {
+            width: 20px;
+            height: 20px;
+        }
+
+    .story-word {
+        transition: background-color 0.3s ease;
+    }
+
+    .story-word.highlighted {
+        background-color: #73b9eb;
+        color: #fff;
+    }
+
+    .listening-animation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .listening-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #4a90e2;
+        animation: rollercoaster 1.5s infinite ease-in-out;
+    }
+
+    .listening-dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .listening-dot:nth-child(2) {
+        animation-delay: 0.3s;
+    }
+
+    .listening-dot:nth-child(3) {
+        animation-delay: 0.5s;
+    }
+
+    @keyframes rollercoaster {
+        0%, 100% {
+            transform: translateY(0);
+            background-color: #4a90e2;
+        }
+        50% {
+            transform: translateY(-15px);
+            background-color: #1e78c3;
+        }
+    }
+
+        .story-text {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-part">
+        <header>
+            {% include 'components/new-header.html' %}
+        </header>
+        <section class="content">
+            <!--{#<h2>On a very fine Sunday exactly at noon, the Quick Brown Fox! Jumped over the lazy dog!</h2>#}-->
+            
+            <h2>{{ story.title }}</h2>
+            <section class="container">
+                <div class="main-container">
+                    <div class="carousel">
+                        <!--<img src="{% static 'assets/images/books.jpg' %}" alt="Image 1">
+                        <img src="{% static 'assets/images/entrepreneur.avif' %}" alt="Image 2">
+                        <img src="{% static 'assets/images/innovation.jpg' %}" alt="Image 3">
+                        <img src="{% static 'assets/images/writing.jpg' %}" alt="Image 4">-->
+                        {% for image in story.images.all %}
+                        <img class="story-carousel-image image" src="{{ image.image.url }}" alt="{{image.alt}}"> <!--Image {{ forloop.counter }} -->
+                        {% endfor %}
+                        <img src="{{story.topics.first.banner}}" alt="Image 4">
+                        
+                    </div>
+                    <div class="carousel-nav">
+                        <button class="carousel-prev" id="carousel-prev"><img src="{% static 'assets/svgs/prev-thick.svg' %}" alt=""></button>
+                        {% if request.user.is_authenticated and request.user.profile in story.likes.all %}
+                        <button class="loved-btn" style="display: block; background-color: transparent;"><img class="loved-svg" src="{% static 'assets/svgs/loved.svg' %}" alt="loved btn"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        <button class="love-btn" style="display: none; background-color: transparent;" data-story-id="{{ story.id }}"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love svg"></button>
+                        {% elif request.user.is_authenticated %}
+                        <button class="loved-btn" style="display: none; background-color: transparent;"><img class="loved-svg" src="{% static 'assets/svgs/loved.svg' %}" alt="loved btn"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        <button class="love-btn" style="display: block; background-color: transparent;" data-story-id="{{ story.id }}"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love svg"><p class="love-count">{{story.love_count|intword}}</p></button>
+                        {% else %}
+                        <button class="love-btn"><img class="love-svg" src="{% static 'assets/svgs/love.svg' %}" alt="love btn"></button>
+                        {% endif %}
+                        <button class="carousel-next" id="carousel-next"><img src="{% static 'assets/svgs/next-thick.svg' %}" alt=""></button>
+                    </div>
+                    
+                    <div class="profile-container">
+                        <img src="{{ story.writer.avatar }}" alt="Profile Image" class="profile-image">
+                        <div class="profile-info">
+                            <p style="color: #fff;">
+                                {% if story.writer.first_name and story.writer.last_name %} {{ story.writer.first_name }} {{ story.writer.last_name }} {% else %} {{story.writer.user.username}} {% endif %}</p>
+                            <div class="dot"></div>
+                            <p style="color: #fff;">{{ story.created_at|naturaltime }}</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="listen-container">
+                <button class="listen-btn" id="listen-btn">
+                    <img src="{% static 'assets/svgs/play.svg' %}" alt="Play button" class="listen-svg">
+                    <p>Listen</p>
+                </button>
+                <button class="listen-pause-btn" id="listen-pause-btn" style="display: none;">
+                    <img src="{% static 'assets/svgs/pause.svg' %}" alt="Pause button" class="listen-svg">
+                    <p class="listening-animation">Listening</p>
+                    <div class="listening-animation">
+                        <div class="listening-dot"></div>
+                        <div class="listening-dot"></div>
+                        <div class="listening-dot"></div>
+                    </div>
+                                       
+                </button>
+                <div class="share-btn-container">{% include 'components/share.html' %}</div>
+
+            </div>
+            <div class="listen-container bottom">
+                <button class="listen-btn" id="listen-btn">
+                    <img src="{% static 'assets/svgs/play.svg' %}" alt="Play button" class="listen-svg">
+                    <p>Listen</p>
+                </button>
+                <button class="listen-pause-btn" id="listen-pause-btn" style="display: none;">
+                    <img src="{% static 'assets/svgs/pause.svg' %}" alt="Pause button" class="listen-svg">
+                    <p class="listening-animation">Listening</p>
+                    <div class="listening-animation">
+                        <div class="listening-dot"></div>
+                        <div class="listening-dot"></div>
+                        <div class="listening-dot"></div>
+                    </div>
+                                       
+                </button>
+            </div>
+            {#<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, ex corrupti quia excepturi debitis, atque, expedita dolorem veritatis cum asperiores beatae iure. Accusamus culpa, odio perspiciatis ea delectus nemo, accusantium ipsam magnam corporis qui consequuntur deserunt provident ipsa. Facilis excepturi quidem temporibus velit, cum enim unde minima nihil. Error, veniam.</p>#}
+            <div id="story-text" class="story-text" style="color: #4a4a4a">{{ story.text|safe }}</div>
+        </section>
+        {% include 'components/comments-section.html' %}
+    </div>
+    {% include 'story/aside.html' %}
+
+    <!-- modal - story image view -->
+    <div class="modal" id="myModal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption" style="display: block; text-align: center; color: #fff; font-size: 16px; margin-top: 10px;"></div>
+      </div>
+
+    {% if story.status == 'r' %}
+        {% include 'components/review-progress.html' %}
+    {% endif %}
+
+      <script>
+        // change ql-editor to false
+        const qlEditor = document.querySelector('.ql-editor');
+        if (qlEditor) {
+            qlEditor.setAttribute('contenteditable', false);
+        }
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        
+        // Get the image and insert it inside the modal
+        var images = document.querySelectorAll(".image");
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+
+        images.forEach(img => {
+            img.onclick = function(){
+                modal.style.display = "block";
+                modalImg.src = this.src;
+                captionText.innerHTML = this.alt;
+            }
+        })
+        
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() { 
+          modal.style.display = "none";
+        }
+
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        
+        // When the user presses the escape key, close the modal
+        document.addEventListener('keydown', function(event){
+            if(event.key === "Escape"){
+                modal.style.display = "none";
+            }
+        });
+    </script>
+
+    <!-- Listen to the story -->
+    <!--<script>
+        const listenBtn = document.getElementById('listen-btn');
+        const listenPauseBtn = document.getElementById('listen-pause-btn');
+        const audio = new Audio();
+        audio.src = "{{ story.audio.url }}";
+        audio.preload = 'auto';
+
+        listenBtn.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.play();
+                listenBtn.style.display = 'none';
+                listenPauseBtn.style.display = 'flex';
+            }
+        });
+
+        listenPauseBtn.addEventListener('click', function() {
+            audio.pause();
+            listenBtn.style.display = 'flex';
+            listenPauseBtn.style.display = 'none';
+        });
+    </script>-->
+    <!-- using browser speech synthesis -->
+    <!--<script>
+        const listenBtn = document.getElementById('listen-btn');
+        const listenPauseBtn = document.getElementById('listen-pause-btn');
+
+        const bottomContainer = document.querySelector('.listen-container.bottom');
+        const bottomListenBtn = document.querySelector('.listen-container.bottom #listen-btn')
+        const bottomListenPauseBtn = document.querySelector('.listen-container.bottom #listen-pause-btn')
+        
+        const storyText = document.getElementById('story-text');
+        const synth = window.speechSynthesis;
+    
+        let currentUtterance = null;
+        let isPaused = false;
+    
+        // Split story into words
+        const words = storyText.textContent.split(' ');
+        storyText.innerHTML = words.map((word, index) => `<span id="word-${index}" class="story-word">${word}</span>`).join(' ');
+    
+        let currentWordIndex = 0;
+    
+        function playNarration() {
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                return;
+            }
+    
+            currentWordIndex = 0;
+            const utterance = new SpeechSynthesisUtterance(storyText.innerText);
+            utterance.rate = 1; // Adjust rate if needed
+            utterance.pitch = 1; // Adjust pitch if needed
+            utterance.onboundary = (event) => {
+                if (event.name === "word") {
+                    highlightWord(currentWordIndex++);
+                }
+            };
+    
+            utterance.onend = () => {
+                resetHighlighting();
+                listenBtn.style.display = 'flex';
+                listenPauseBtn.style.display = 'none';
+            };
+    
+            currentUtterance = utterance;
+            synth.speak(utterance);
+        }
+    
+        function highlightWord(index) {
+            if (index > 0) {
+                document.getElementById(`word-${index - 1}`).classList.remove('highlighted');
+            }
+            const currentWord = document.getElementById(`word-${index}`);
+            if (currentWord) {
+                currentWord.classList.add('highlighted');
+                currentWord.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    
+        function resetHighlighting() {
+            words.forEach((_, index) => {
+                document.getElementById(`word-${index}`).classList.remove('highlighted');
+            });
+        }
+    
+        listenBtn.addEventListener('click', () => {
+            listenBtn.style.display = 'none';
+            listenPauseBtn.style.display = 'flex';
+            bottomContainer.style.display = 'flex';
+            bottomListenBtn.style.display = 'none';
+            bottomListenPauseBtn.style.display = 'flex';
+            playNarration();
+        });
+    
+        listenPauseBtn.addEventListener('click', () => {
+            if (synth.speaking) {
+                synth.pause();
+                isPaused = true;
+                listenBtn.style.display = 'flex';
+                listenPauseBtn.style.display = 'none';
+                bottomContainer.style.display = 'none';
+                bottomListenBtn.style.display = 'flex';
+                bottomListenPauseBtn.style.display = 'none';
+            }
+        });
+        bottomListenBtn.addEventListener('click', () => {
+            listenBtn.style.display = 'none';
+            listenPauseBtn.style.display = 'flex';
+            bottomListenBtn.style.display = 'none';
+            bottomListenPauseBtn.style.display = 'flex';
+            playNarration();
+        });
+    
+        bottomListenPauseBtn.addEventListener('click', () => {
+            if (synth.speaking) {
+                synth.pause();
+                isPaused = true;
+                listenBtn.style.display = 'flex';
+                listenPauseBtn.style.display = 'none';
+                bottomListenBtn.style.display = 'flex';
+                bottomListenPauseBtn.style.display = 'none';
+            }
+        });
+    
+        // Stop narration when the user navigates away
+        window.addEventListener('beforeunload', () => {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+        });
+    </script>-->
+    <!-- Using Azure Text to Speech -->
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+    <script>
+        const listenBtn = document.getElementById('listen-btn');
+        const listenPauseBtn = document.getElementById('listen-pause-btn');
+        const bottomContainer = document.querySelector('.listen-container.bottom');
+        const bottomListenBtn = document.querySelector('.listen-container.bottom #listen-btn');
+        const bottomListenPauseBtn = document.querySelector('.listen-container.bottom #listen-pause-btn');
+        const storyText = document.getElementById('story-text');
+
+        let currentUtterance = null;
+        let isPaused = false;
+        let synthesizer = null;
+        let isSpeaking = false;
+
+        // Azure setup (replace with your API key and region)
+        const apiKey = '8dcrzZYDDPvJk2dn8C4WHNXLSW17F4R4cFOvYJlTv0xvS9noQRbOJQQJ99ALACYeBjFXJ3w3AAAYACOGWRep';
+        const region = 'eastus';
+
+        let currentWordIndex = 0;
+        let player = null; // to control the audio
+
+        function removeEmojis(text) {
+            // Regular expression to match emojis and non-ASCII characters
+            const emojiRegex = /[^\x00-\x7F]+/g; // Matches any character outside the ASCII range, including emojis
+            return text.replace(emojiRegex, ''); // Replace emojis with an empty string
+        }
+
+        // Function to highlight words as they are read
+        function highlightWord(index) {
+            if (index > 0) {
+                document.getElementById(`word-${index - 1}`).classList.remove('highlighted');
+            }
+            const currentWord = document.getElementById(`word-${index}`);
+            if (currentWord) {
+                currentWord.classList.add('highlighted');
+                currentWord.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Create the Speech Synthesis instance with SpeakerAudioDestination configurations
+        function createSpeechSynthesis() {
+            const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(apiKey, region);
+            //speechConfig.speechSynthesisVoiceName = "en-US-SteffanMultilingualNeural"; // steffan-multilingual
+            speechConfig.speechSynthesisVoiceName = "en-US-LolaMultilingualNeural"; // en-US-LolaMultilingualNeural
+            player = new SpeechSDK.SpeakerAudioDestination();  // This will allow me to pause and resume
+            const audioConfig = SpeechSDK.AudioConfig.fromSpeakerOutput(player);
+            synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
+        }
+
+        function playNarration() {
+            if (!synthesizer) {
+                createSpeechSynthesis();
+            }
+
+            if (isPaused) {
+                player.resume(); // resume the playback from where it was paused
+                isPaused = false;
+                return;
+            }
+
+            currentWordIndex = 0;
+            let textToSpeak = storyText.innerText;
+
+            textToSpeak = removeEmojis(textToSpeak);
+
+            // split the text into words
+            //const words = storyText.innerHTML.split(/(<[^>]*>|&nbsp;| )/).filter(Boolean);
+
+            // replace the story text with spans
+            //storyText.innerHTML = words.map((word, index) => `<span id="word-${index}" class="story-word">${word}</span>`).join('');
+            
+            // play the text to speech
+            synthesizer.speakTextAsync(textToSpeak,
+                function (result) {
+                    if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+                        //listenBtn.style.display = 'flex';
+                        //listenPauseBtn.style.display = 'none';
+                    }
+                    else if (result.reason === SpeechSDK.ResultReason.WordBoundary) {
+                        console.log('word boundary');
+                        const wordIndex = result.audioOffset / 10000000;
+                        highlightWord(Math.floor(wordIndex));
+                    }
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+
+            isSpeaking = true;
+        }
+
+        // listen button
+        listenBtn.addEventListener('click', () => {
+            listenBtn.style.display = 'none';
+            listenPauseBtn.style.display = 'flex';
+            bottomContainer.style.display = 'flex';
+            bottomListenBtn.style.display = 'none';
+            bottomListenPauseBtn.style.display = 'flex';
+            playNarration();
+        });
+
+        // pause button
+        listenPauseBtn.addEventListener('click', () => {
+            if (isSpeaking) {
+                player.pause(); // pause the audio playback
+                isPaused = true;
+                listenBtn.style.display = 'flex';
+                listenPauseBtn.style.display = 'none';
+                bottomContainer.style.display = 'none';
+                bottomListenBtn.style.display = 'flex';
+                bottomListenPauseBtn.style.display = 'none';
+            }
+        });
+
+        // bottom listen button
+        bottomListenBtn.addEventListener('click', () => {
+            listenBtn.style.display = 'none';
+            listenPauseBtn.style.display = 'flex';
+            bottomListenBtn.style.display = 'none';
+            bottomListenPauseBtn.style.display = 'flex';
+            playNarration();
+        });
+
+        // bottom pause button
+        bottomListenPauseBtn.addEventListener('click', () => {
+            if (isSpeaking) {
+                player.pause(); // pause the audio
+                isPaused = true;
+                listenBtn.style.display = 'flex';
+                listenPauseBtn.style.display = 'none';
+                bottomContainer.style.display = 'flex';
+                bottomListenBtn.style.display = 'flex';
+                bottomListenPauseBtn.style.display = 'none';
+            }
+        });
+
+        // Stop narration when the user navigates away
+        window.addEventListener('beforeunload', () => {
+            if (isSpeaking) {
+                synthesizer.stop();
+            }
+        });
+    </script>
+
+    
+    <script>
+        const carousel = document.querySelector('.carousel');
+        const carouselNext = document.querySelector('#carousel-next');
+        const carouselPrev = document.querySelector('#carousel-prev');
+
+        let currentSlide = 0;
+
+        carouselNext.addEventListener('click', () => {
+            currentSlide++;
+            if (currentSlide >= carousel.children.length - 1) {
+                currentSlide = 0;
+            }
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        });
+
+        carouselPrev.addEventListener('click', () => {
+            currentSlide--;
+            if (currentSlide < 0) {
+                currentSlide = carousel.children.length - 2;
+            }
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        });
+
+        // like the story
+        const mainContainer = document.querySelector('.main-container');
+
+        
+        
+    </script>
+
+    {% if request.user.is_authenticated %}
+    <script>
+        function humanizeNumber(number) {
+            if (number >= 1e9) { // Billion
+                return (number / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+            } else if (number >= 1e6) { // Million
+                return (number / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+            } else if (number >= 1e3) { // Thousand
+                return (number / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+            } else {
+                return number.toString();
+            }
+        }
+
+        // love and loved the story
+        document.querySelector('.love-btn').addEventListener('click', () => {
+            
+                
+            // send a request to the server to love the story
+            fetch(`/story/{{ story.id }}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    const lovedBtn = document.querySelector('.loved-btn');
+                    lovedBtn.style.display = 'block';
+                    lovedBtn.style.opacity = 0;
+                    lovedBtn.style.transform = 'scale(0)';
+                    lovedBtn.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        lovedBtn.style.transform = 'scale(1)';
+                        lovedBtn.style.opacity = 1;
+                    }, 50);
+                } else {
+                    console.log('Error loving story');
+                }
+                return response.json();
+            }).then(json => {
+                const loveCounts = document.querySelectorAll('.love-count');
+                loveCounts.forEach(count => {
+                    //const currentCount = parseInt(count.textContent);
+                    //count.textContent = currentCount + 1;
+                    count.textContent = humanizeNumber(json.love_count); 
+                });
+            });
+            document.querySelector('.love-btn').style.display = 'none';
+        })
+
+        // unlove and unloved the story
+        document.querySelector('.loved-btn').addEventListener('click', () => {
+            
+            // send a request to the server to unloved the story
+            fetch(`/story/{{ story.id }}/unlike`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    const loveBtn = document.querySelector('.love-btn');
+                    loveBtn.style.display = 'block';
+                    loveBtn.style.opacity = 0;
+                    loveBtn.style.transform = 'scale(0)';
+                    loveBtn.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        loveBtn.style.transform = 'scale(1)';
+                        loveBtn.style.opacity = 1;
+                    }, 50);
+                
+                
+
+                } else {
+                    console.log('Error loving story');
+                }
+                return response.json();
+            }).then(json => {
+                const loveCounts = document.querySelectorAll('.love-count');
+                loveCounts.forEach(count => {
+                    //const currentCount = parseInt(count.textContent);
+                    //count.textContent = currentCount + 1;
+                    count.textContent = json.love_count === 0 ? '0' : humanizeNumber(json.love_count);
+                });
+            });
+            document.querySelector('.loved-btn').style.display = 'none';
+        })
+
+        // comments 
+        const input = document.querySelector('.type-comment-input')
+        const button = document.querySelector('.submit-comment-btn')
+        input.addEventListener('input', () => {
+            if (input.value.length > 0) {
+                button.style.display = 'block'
+            } else {
+                button.style.display = 'none'
+            }
+        })
+
+        button.addEventListener('click', (e) => {
+            e.preventDefault()
+            fetch(`/story/{{ story.id }}/comment`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    comment: input.value
+                })
+            }).then(response => {
+                if (response.ok) {
+                    input.value = '';
+                }
+                return response.json();
+            }).then(json => {
+                const comments = document.querySelector('.comments');
+                const comment = document.createElement('div');
+                comment.classList.add('comment');
+                comment.innerHTML = `
+                    <div class="top">
+                        <img class="comment-profile" src="{{request.user.profile.avatar}}" alt="">
+                        <p>You Said</p>
+                        <img src="{% static 'assets/svgs/you_commented.svg' %}" alt="" srcset="">
+                    </div>
+                    <div class="comment-text">
+                        <p>${json.comment}</p>
+                    </div>`
+                comments.prepend(comment);
+                })
+            })
+
+        // emoji picker in comments
+        /*const emojiBtn = document.querySelector('.emoji-btn');
+        const emojiPickerContainer = document.querySelector('.emoji-picker-container');
+
+        const emojiPicker = new EmojiPicker({
+        emojiable_selector: ['.type-comment-input'],
+        events: {
+            emojiPickerDidShow: function() {
+            emojiPickerContainer.style.display = 'block';
+            },
+            emojiPickerDidHide: function() {
+            emojiPickerContainer.style.display = 'none';
+            }
+        }
+        });
+
+            emojiBtn.addEventListener('click', () => {
+            emojiPicker.togglePicker();
+        });*/
+    </script>
+    {% endif %}
+</body>
+</html>

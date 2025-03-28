@@ -1,0 +1,198 @@
+
+
+<style>
+    .tooltip {
+        visibility: visible;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+
+        visibility: hidden;
+
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #fff;
+    }
+
+    .tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+        
+    }
+
+    .tooltip button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+    }
+
+    .tooltip .font-sizes-dropdown, #colors-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #333;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        color: #fff;
+        visibility: hidden;
+    }
+
+    .tooltip #colors-dropdown {
+        left: auto;
+        right: 0;
+        
+        padding: 2px;
+    }
+
+    .tooltip .choose-colors-btn, .tooltip .choose-colors-btn span {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .tooltip #colors-dropdown button {
+        width: 20px;
+        height: 20px;
+        background-color: rgb(107, 114, 8);
+        border: 1px solid #fff;
+        border-radius: 4px;
+    }
+    
+</style>
+
+
+<div class="tooltip-container">
+    <div class="tooltip">
+        <button class="capitalize">Aa</button>
+        <!--<button class="choose-font-size-btn">16px</button>
+        <div class="font-sizes-dropdown">
+            <button data-size="4">12px</button>
+            <button data-size="5">16px</button>
+            <button data-size="6">20px</button>
+            <button data-size="6.5">24px</button>
+            <button data-size="7">28px</button>
+            <button data-size="7.5">32px</button>
+        </div>-->
+        <button id="bold">B</button>
+        <button id="italic" style="rotate: 25deg;">I</button>
+        <!--<div id="text-color">
+            <div id="choose-colors-btn">
+                A
+                <div style="width: 150%; height: 5px; background-color: #fff; transform: translateX(-20%)"></div>
+            </div>
+            <div id="colors-dropdown" class="colors-dropdown">
+                <button style="background-color: #333;"></button>
+                <button style="background-color: #fff;"></button>
+                <button style="background-color: #000;"></button>
+                <button style="background-color: #ff0000;"></button>
+                <button style="background-color: #00ff00;"></button>
+                <button style="background-color: #0000ff;"></button>
+            </div>
+        </div>-->
+    </div>
+</div>
+
+<script>
+
+    /*const chooseFontSizeBtn = document.querySelector('.choose-font-size-btn');*/
+    const chooseColorsBtn = document.querySelector('#choose-colors-btn');
+
+    /*chooseColorsBtn.addEventListener('click', () => {
+        const colorsDropdown = document.querySelector('#colors-dropdown');
+        colorsDropdown.style.visibility = colorsDropdown.style.visibility === 'visible' ? 'hidden' : 'visible';
+    })*/
+    /*chooseFontSizeBtn.addEventListener('click', () => {
+        const fontSizesDropdown = document.querySelector('.font-sizes-dropdown');
+        fontSizesDropdown.style.visibility = fontSizesDropdown.style.visibility === 'visible' ? 'hidden' : 'visible';
+    })*/
+
+    const storyTextContent = document.querySelector('.story-text-content');
+    const bold = document.querySelector('#bold');
+    const italic = document.querySelector('#italic');
+    /*const fontSizesBtn = document.querySelectorAll('.font-sizes-dropdown button');*/
+    const capitalizeBtn = document.querySelector('.capitalize');
+    
+    storyTextContent.addEventListener('mouseup', (event) => {
+        
+        const tooltip = document.querySelector('.tooltip');
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        tooltip.style.visibility = 'visible';
+        tooltip.style.top = `${rect.top + window.scrollY - 30}px`;
+        tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+        
+    })
+
+
+
+    bold.addEventListener('click', () => {
+        document.execCommand('bold');
+    });
+
+    italic.addEventListener('click', () => {
+        document.execCommand('italic');
+    });
+
+    /*fontSizesBtn.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.execCommand('fontSize', false, `${btn.getAttribute('data-size')}`);
+        })
+    })*/
+
+
+    capitalizeBtn.addEventListener('click', () => {
+        const selection = window.getSelection();
+        const text = selection.toString();
+        const isUpperCase = text === text.toUpperCase();
+        const transformedText = isUpperCase ? text.toLowerCase() : text.toUpperCase();
+        document.execCommand('insertText', false, transformedText);
+    })
+
+    /*storyTextContent.addEventListener('mouseleave', () => {
+        const tooltip = document.querySelector('.tooltip');
+        tooltip.style.visibility = 'hidden';
+    })*/
+
+    document.addEventListener('selectionchange', () => {
+        const selection = window.getSelection();
+        const storyTextContent = document.querySelector('.story-text-content');
+        if (selection.toString() === '' || !storyTextContent.contains(selection.anchorNode)) {
+            const toolbar = document.querySelector('.tooltip');
+            toolbar.style.visibility = 'hidden';
+        } else {
+            const toolbar = document.querySelector('.tooltip');
+            toolbar.style.visibility = 'visible';
+        }
+    })
+
+</script>
+</body>
+</html>

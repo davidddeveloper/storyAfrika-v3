@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <link rel="stylesheet" href="{% static 'tailwind.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 0;
+        }
+
+        .header .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .header .search-bar {
+            flex: 1;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px 15px;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 5px;
+            width: 100%
+        }
+
+        .search-bar button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar button svg {
+            width: 16px;
+            height: 16px;
+            fill: #888;
+        }
+
+        .header .nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav img.user-profile-img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        nav a.stories-link-mobile, nav a.write-link-mobile {
+            display: none;
+
+        }
+
+        @media (max-width: 630px) {
+            nav a.stories-link, nav a.write-link {
+                display: none;
+
+            }
+            nav a.stories-link-mobile, nav a.write-link-mobile {
+                display: block;
+
+            }
+            .search-bar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 540px) {
+            nav.nav .user-profile-link {
+                display: none;
+            }
+
+            nav a.stories-link-mobile img, nav a.write-link-mobile img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">storyafrika</a>
+        <form class="search-bar">
+            <input class="header-search-input" type="text" placeholder="Search for stories, topics and people...">
+            <button aria-label="Search">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.55l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 9.5 5 13 7.01 13 9.5 10.99 14 9.5 14z"></path>
+                </svg>
+            </button>
+        </form>
+        <nav class="nav">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'app:stories' %}" class="stories-link"><img src="{% static 'assets/svgs/stories-icon.svg' %}" alt="icon"> Stories</a>
+            <a href="{% url 'app:editor' %}" class="write-link"><img src="{% static 'assets/svgs/write-icon.svg' %}" alt=""> Write</a>
+
+            <!-- mobile -->
+            <a href="{% url 'app:stories' %}" class="stories-link-mobile"><img src="{% static 'assets/svgs/stories-icon.svg' %}" alt="icon"></a>
+            <a href="{% url 'app:editor' %}" class="write-link-mobile"><img src="{% static 'assets/svgs/write-icon.svg' %}" alt=""></a>
+
+
+            <a href="#" class="user-profile-link"><img class="user-profile-img" src="{{ request.user.profile.avatar }}" alt="User Profile"></a>
+            {% else %}
+            <h2><a href="{% url 'app:join_us' %}" style="font-size: 18px;">Join Us.</a></h2>
+            {% endif %}
+            {% include 'components/menu.html' %}
+        </nav>
+    </header>
+    <script>
+        const searchForm = document.querySelector('.search-bar');
+        const searchInput = document.querySelector('.header-search-input');
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            const searchQuery = searchInput.value;
+            if (searchQuery !== '') {
+                window.location.href = `/search?q=${searchQuery}&category=stories`
+            }
+
+        })
+
+        // delete stories that the user was editing but did not save and leave the editing page
+        /*window.addEventListener('beforeunload', () => {
+            const storyId = localStorage.getItem('storyId');
+            if (storyId) {
+                fetch(`/delete_story/${storyId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'    
+                    },    
+                }).then(response => {
+                    if (response.ok) {
+                        localStorage.removeItem('storyId');
+                    }
+                });
+            }
+                    }*/
+    </script>
+    <script>
+        let link = document.querySelector('.user-profile-link');
+        link.addEventListener('click', () => {
+            document.querySelector('#menu').classList.toggle('hidden');
+        })
+
+        document.body.addEventListener('click', (event) => {
+            if (event.target !== document.querySelector('.user-profile-img') && !event.target.closest('#menu')) {
+                    console.log(event.target)
+                    document.querySelector('#menu').classList.add('hidden');
+                }
+                
+            })
+        
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.querySelector('#menu').classList.toggle('hidden');
+            }
+        })
+    </script>
+</body>
+</html>

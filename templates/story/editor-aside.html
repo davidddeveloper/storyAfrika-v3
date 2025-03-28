@@ -1,0 +1,244 @@
+{% load static %}
+<style>
+button.aside_header_body, button.aside_header_body:active, button.aside_header_body:focus {
+    border: 0;
+    outline: 0;
+}
+button.aside_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    
+}
+
+aside.editor-aside {
+    padding-block: 20px;
+    min-height: 100vh ;
+}
+
+aside.editor-aside button, aside.editor-aside button:active, aside.editor-aside button:focus {
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+}
+aside.editor-aside .aside_header {
+    margin-bottom: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+aside.editor-aside .topics-to-select-from-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+aside.editor-aside .topics-to-select-from, aside.editor-aside .simillar-writers {
+    padding-inline: 20px;
+}
+
+aside.editor-aside div {
+    padding-inline: 25px;
+}
+
+aside.editor-aside .from-title {
+    font-weight: bolder;
+    font-size: small;
+
+}
+
+aside.editor-aside .related-story {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+aside.editor-aside .related-story header {
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+}
+aside.editor-aside .related-story img {
+    object-fit: cover;
+    flex-shrink: 0;
+}
+aside.editor-aside .related-story p.story-title {
+    font-size: 14px;
+    color: #4A4A4A;
+    margin-top: 5px;
+}
+aside.editor-aside .related-story p.username {
+    color: #000;
+}
+aside.editor-aside .related-story header, aside.editor-aside .related-story img {
+    height: 30px; width: 30px; border-radius: 50%;
+}
+
+aside.editor-aside .also-by-user {
+    margin-top: 50px;
+    border-top: 2px solid #4A4A4A;
+    padding-top: 50px;
+}
+
+.also-by-user-stories-container .also-by-user-story header img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-top: 0;
+}
+
+.also-by-user-stories-container .also-by-user-story header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    
+}
+.also-by-user-stories-container .also-by-user-story header p {
+    font-size: 16px;
+    font-weight: bolder;
+}
+
+aside.editor-aside .simillar-writers {
+    margin-top: 40px;
+
+}
+
+aside.editor-aside .simillar-writers header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+aside.editor-aside .simillar-writers header {
+    display: flex;
+    gap:  5px;
+    align-items: start;
+
+}
+
+aside.editor-aside .simillar-writers header h4 {
+    margin: 0;
+}
+
+aside.editor-aside .simillar-writers header .content button {
+    cursor: pointer;
+    color: #2699eb
+}
+
+aside.editor-aside { 
+    overflow: hidden;
+}
+/* for simillar writer scrolling horizontally */
+aside.editor-aside .simillar-writers-profile-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 0 20px;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.simillar-writers-profile-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.simillar-writers-profile-container article {
+    flex-shrink: 0;
+    user-select: none;
+    max-width: 250px;;
+}
+
+.publish-btn {
+    background-color: #2699eb !important;
+    padding: 4px 8px !important;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+
+    /*position: absolute;
+    top: 5%;
+    right: 5%;*/
+}
+
+.publish-btn:hover {
+    background-color: #10588b !important;
+}
+
+.publish-story-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.note-the-following {
+    color: #4A4A4A;   
+}
+</style>
+<body class="aside_header-body">
+    <aside class="right-part editor-aside">
+        <!--<header class="aside_header">
+            <button style="cursor: pointer;"><img src="{% static '/assets/svgs/logo.svg' %}"></img></button>
+            <button style="cursor: pointer;"><a href="#" style="text-decoration: none;"><img src="{% static '/assets/svgs/write-icon.svg' %}" alt=""></a></button>
+        </header>-->
+        <div></div>
+        <section class="topics-to-select-from" style="margin-top: 40px; margin-inline: 30px;">
+            <h3 class="from-title">Topics to Select From</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                {% for topic in topics %}
+                <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <input type="checkbox" name="topics" value="{{ topic.id }}" id="topic-{{ topic.id }}">
+                    <label for="topic-{{ topic.id }}" style="margin-left: 10px;">{{ topic.name }}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <div style="border-top: 2px solid black; margin-top: 20px; padding-top: 20px;"></div>
+        
+        <div class="publish-story-btn-container">
+            <button class="publish-btn">Publish Your Story</button>
+        </div>
+
+        <div class="note-the-following" style="border-top: 2px solid black; margin-top: 20px; padding-top: 20px;">
+            <h3 class="from-title" style="color: #000">Remember the Following</h3>
+            <p>The images you upload should be less than 5MB</p>
+            <p>It should be in .jpg or .png format</p>
+            <p>The best image size in pixels is 600x400</p>
+            <p>By publishing your story, you agree to our <a href="#">Terms of Service</a></p>
+        </div>
+
+<div id="auto-save-status" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #2699eb; color: #fff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    Saving...
+</div>
+
+        </aside>
+
+    <script>
+        const topicsList = document.querySelector('.topics-to-select-from ul');
+        topicsList.addEventListener('change', function(event) {
+            const selectedTopics = [];
+            const checkboxes = topicsList.querySelectorAll('li input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedTopics.push(checkbox.value);
+                }
+            });
+            fetch('/editor/{{story.id}}/save-topics', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ topics: selectedTopics })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+        });
+    </script>
+    
+</body>
+</html>

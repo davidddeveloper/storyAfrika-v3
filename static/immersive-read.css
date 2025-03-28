@@ -1,0 +1,27 @@
+:root {
+    /* text sizes */
+    --sm: 16px;
+    --sm-1: 18px;
+    --sm-2: 20px;
+    --md-1: 25px;
+    --md-2: 30px;
+    --lg: 35px;
+    --lg-1: 50px;
+    --lg-2: 80px;
+
+    /* columns sizes */
+    --w-sm: '430px';
+    --w-md: '720px';
+    --w-lg: '960px'
+
+}
+
+.active-column, .active-column {
+    border: 2px solid #2699eb;
+    transform: scale(.9, .9);
+    transition: transform .45s ease-out;
+  }
+
+.active {
+    background-color: '#16101C';
+}

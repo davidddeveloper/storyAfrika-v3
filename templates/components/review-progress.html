@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Progress</title>
+    <style>
+        .review-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .review-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+        .review-card h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .review-card p {
+            color: #666;
+        }
+        .review-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        .review-close:hover {
+            color: #333;
+        }
+        .review-progress {
+            margin-top: 15px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .review-progress-bar {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function reviewProgress() {
+            const overlay = document.createElement('div');
+            overlay.className = 'review-overlay';
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'review-close';
+            closeButton.innerHTML = '&times;';
+            closeButton.onclick = () => document.body.removeChild(overlay);
+
+            const title = document.createElement('h2');
+            title.textContent = 'Review in Progress';
+
+            const message = document.createElement('p');
+            message.textContent = 'Your story is currently being reviewed by our team.';
+
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'review-progress';
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'review-progress-bar';
+
+            progressContainer.appendChild(progressBar);
+            card.appendChild(closeButton);
+            card.appendChild(title);
+            card.appendChild(message);
+            card.appendChild(progressContainer);
+            overlay.appendChild(card);
+            document.body.appendChild(overlay);
+
+            // Animate progress bar
+            setTimeout(() => {
+                progressBar.style.width = '60%';
+            }, 100);
+        }
+
+        // Show the ongoing review progress when the document is loaded
+        document.addEventListener('DOMContentLoaded', reviewProgress);
+    </script>
+</body>
+</html>

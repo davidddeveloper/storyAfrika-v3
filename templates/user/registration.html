@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Us | StoryAfrika</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="icon" type="image/png" href="/static/images/logo.jpg">
+    <style>
+        .floating-label-group {
+            position: relative;
+        }
+        .floating-label {
+            position: absolute;
+            top: 50%;
+            left: 0.75rem;
+            transform: translateY(-50%);
+            transition: all 0.2s ease;
+            pointer-events: none;
+            color: gray;
+        }
+        input:focus ~ .floating-label,
+        input:not(:placeholder-shown) ~ .floating-label {
+            top: 0;
+            transform: translateY(-100%);
+            font-size: 0.75rem;
+            color: #719cf8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            
+        }
+
+        .background {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            /*gap: 2px; /* Adjusts spacing between images */
+            
+        }
+        .background::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            mix-blend-mode: multiply;
+        }
+
+        .background .bg-image {
+            width: 100%;
+            height: 50vh;
+            object-fit: cover;
+        }
+
+        .bg-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-image-animated {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+            animation: pushUp 20s infinite;
+        }
+
+        .bg-image-animated:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .bg-image-animated:nth-child(2) {
+            animation-delay: 5s;
+        }
+
+        .bg-image-animated:nth-child(3) {
+            animation-delay: 10s;
+        }
+
+        .bg-image-animated:nth-child(4) {
+            animation-delay: 15s;
+        }
+
+        @keyframes pushUp {
+            0%, 20% {
+                top: 100%;
+                opacity: 0;
+            }
+            25%, 45% {
+                top: 0;
+                opacity: 1;
+            }
+            50%, 100% {
+                top: 0;
+                opacity: 0;
+            }
+        }
+
+        .form-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(20px);
+            opacity: 95%;
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .background {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Images -->
+    <div class="background">
+        <video class="bg-image" src="{% static 'assets/videos/music.mp4' %}" alt="Music" autoplay loop muted poster="{% static 'assets/images/dancing.avif' %}"></video>
+        <img class="bg-image" src="{% static 'assets/images/entrepreneur.avif' %}" alt="Entrepreneurship">
+        <img class="bg-image hidden md:block" src="{% static 'assets/images/technology.jpg' %}" alt="Technology">
+        <div class="bg-image-container overflow-hidden relative">
+            <img class="bg-image-animated absolute inset-0" src="{% static 'assets/images/african-load-carrying.jpg' %}" alt="Creativity">
+            <img class="bg-image-animated absolute inset-0" src="{% static 'assets/images/writing.jpg' %}" alt="Writing">
+            <img class="bg-image-animated absolute inset-0" src="{% static 'assets/images/books.jpg' %}" alt="Books">
+            <img class="bg-image-animated" src="{% static 'assets/images/art.jpg' %}" alt="Storytelling">
+        </div>
+        <img class="bg-image hidden md:block" src="{% static 'assets/images/creativity.jpg' %}" alt="Creativity">
+        <video class="bg-image" src="{% static 'assets/videos/technology.mp4' %}" alt="Innovation" autoplay loop muted poster="{% static 'assets/images/technology.avif' %}"></video>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="form-container">
+        <h1 class="text-xl font-bold text-center text-white mt-14 mb-9">Welcome to StoryAfrika</h1>
+        <p class="text-white text-base text-center mt-[35px]">Join us to be a part of our journey</p>
+        <form action="" method="POST" class="space-y-4 w-[550px] mt-20">
+            {% csrf_token %}
+            <div class="max-w-80" hidden>
+                <div class="floating-label-group">
+                  <input
+                    autofocus
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder=" " 
+                    value="temporary-username"
+                    required
+                    maxlength="150"
+                    class="block w-full px-3 py-2 border text-white bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                  <label for="username" class="floating-label">Username</label>
+                </div>
+                <span class="input-error-message">{{form.username.errors}}</span>
+            </div>
+
+            <div class="max-w-80">
+                <div class="floating-label-group">
+                  <input
+                    autofocus
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder=" " 
+                    required
+                    maxlength="254"
+                    class="block w-full px-3 py-2 border text-white bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                  <label for="email" class="floating-label">Email</label>
+                </div>
+                <span class="input-error-message">{{form.email.errors}}</span>
+            </div>
+            <div class="max-w-80">
+                <div class="floating-label-group mt-5">
+                  <input
+                    autofocus
+                    type="password" 
+                    id="password" 
+                    name="password1" 
+                    placeholder=" " 
+                    required
+                    maxlength="250"
+                    minlength="8"
+                    class="block w-full px-3 py-2 border text-white bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                  <label for="password" class="floating-label">Password</label>
+                </div>
+                <span class="input-error-message">{{form.password1.errors}}</span>
+            </div>
+            <div class="max-w-80">
+                <div class="floating-label-group mt-5">
+                  <input
+                    autofocus
+                    type="password" 
+                    id="password-confirmation" 
+                    name="password2" 
+                    placeholder=" " 
+                    required
+                    maxlength="250"
+                    minlength="8"
+                    class="block w-full px-3 py-2 border text-white bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                  <label for="password-confirmation" class="floating-label">Password Confirmation</label>
+                </div>
+                <span class="input-error-message">{{form.password2.errors}}</span>
+            </div>
+            <div class="max-w-80 flex items-center mt-8">
+                <input type="checkbox" id="newsletter" name="newsletter_opt_in" class="mr-4 w-5 h-5 bg-transparent border-2 border-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <label for="newsletter" class="text-white text-base">Do you wish to receive weekly emails from us?</label>
+            </div>
+            <button type="submit"
+                class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-10">
+                Join Us
+            </button>
+        </form>
+        <p class="text-center text-gray-800 text-sm mt-20">
+            Already have an account? <a href="{% url 'app:sign_in' %}" class="text-blue-400 hover:underline">Log In</a>
+        </p>
+    </div>
+</body>
+</html>

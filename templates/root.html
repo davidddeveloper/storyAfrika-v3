@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Storyafrika is a platform showcasing the real-life experiences and stories of individual Africans, highlighting their upbringing, everyday successes, and much more." property="og:description">
+    <meta content="storyafrika - Success Stories and Experiences of Everyday Africans" property="og:title">
+    <meta content="https://stories.storyafrika.live" property="og:url">
+    <meta content="/static/images/write.webp" property="og:image">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="storyafrika - Success Stories and Experiences of Everyday Africans">
+    <meta name="twitter:description" content="Storyafrika is a platform showcasing the real-life experiences and stories of individual Africans, highlighting their upbringing, everyday successes, and much more.">
+    <meta name="twitter:image" content="./write.webp">
+
+    <!-- google oAuth2 client id -->
+    <meta name="google-signin-client_id" content="25158261190-9emalbugfgsvbn9cv7fao3vp6kmi3h37.apps.googleusercontent.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="Cross-Origin-Opener-Policy" content="">
+
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/tailwind.css">
+    <link rel="canonical" href="https://stories.storyafrika.live">
+    <link rel="icon" type="image/png" href="/static/images/logo.jpg">
+    <link rel="me" href="https://www.linkedin.com/in/david-conteh-a42871253/">
+    <title>storyafrika | Inspiring journey - success stories and experiences of everyday Africans</title>
+    
+    <script src="/static/js/jquery.min.js" defer></script>
+    <script src="/static/js/main.js" defer type="module"></script>
+    <script src="/static/js/comment-view.js" defer></script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FW17L5LYTT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-FW17L5LYTT');
+    </script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+<body data-current_user_id="{{current_user.id}}" class="relative">
+    <header>
+      {% if messages %}
+      <ul class="ml-5 float right absolute">
+        {% for message in messages %}
+        <li class="bg-lightblue p-1 mt-2 rounded-sm text-white">{{message}}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </header>
+    
+    
+    {% block home %} {% endblock %}
+    {% block story %} {% endblock %}
+    {% block write %} {% endblock %}
+    {% block miscellaneous %} {% endblock %}
+
+    <script>
+      function handleCredentialResponse(response) {
+      // Get the ID token
+      const id_token = response.credential;
+      console.log(id_token)
+      // Send the ID token to the server
+      fetch("/login_with_google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token: id_token })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          // User is successfully logged in, redirect to profile or dashboard
+          window.location.href = data.redirect_url;
+        } else {
+          // Handle errors
+          console.error("Login failed", data.message);
+        }
+      })
+      .catch(err => console.error("Error during login", err));
+    }  
+    </script>
+</body>
+</html>

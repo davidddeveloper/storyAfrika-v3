@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style-two.css' %}">
+    <title>StoryAfrika | For Writers</title>
+
+    <meta name="title" content="storyafrika - For Writers - Success Stories and Experiences of Everyday Africans">
+    <meta name="description" content="StoryAfrika elevates African writing far and wide across the interwebs. With saturated stories in our library, we've cultivated rare publishing and African expertise.">
+    <meta name="keywords" content="{% for topic in story.topics.all %}{{ topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %} African stories, African experiences, African achievements, StoryAfrika">
+    <meta property="og:title" content="storyafrika - Success Stories and Experiences of Everyday Africans">
+    <meta property="og:description" content="StoryAfrika elevates African writing far and wide across the interwebs. With saturated stories in our library, we've cultivated rare publishing and African expertise.">
+    <meta property="og:url" content="{{request.build_absolute_uri}}">
+    <meta property="og:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="storyafrika - Success Stories and Experiences of Everyday Africans">
+    <meta name="twitter:description" content="StoryAfrika elevates African writing far and wide across the interwebs. With saturated stories in our library, we've cultivated rare publishing and African expertise.">
+    <meta name="twitter:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:creator" content="@{{story.writer.user.username}}">
+    <meta name="twitter:site" content="@StoryAfrika">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- google oAuth2 client id -->
+    <meta name="google-signin-client_id" content="25158261190-9emalbugfgsvbn9cv7fao3vp6kmi3h37.apps.googleusercontent.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="Cross-Origin-Opener-Policy" content="">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+    <section class='container mx-auto px-5 pb-20 md:flex md:flex-col md:items-center md:mx-auto'>
+        <header class='relative container mx-auto mt-[90px] md:px-auto md:flex md:justify-center md:items-center'>
+            <h1 class="text-[50px] md:self-start md:left-[25%] md:top-[-10px] top-[17%] md:text-[80px] w-[40%] md:w-[20%] pl-2 md:order-1">
+                For <span class="text-red">Writers</span>
+            </h1>
+            <img 
+                class=' animate-woman-writing md:order-2' 
+                src="/static/assets/svgs/woman-writing.svg" 
+                alt="Illustration of a woman writing" 
+            />
+        </header>
+        <main class="container mx-auto mt-[40px]">
+            <p class="text-[30px] text-lightgray">
+                StoryAfrika elevates African writing far and wide across the interwebs. With saturated stories in our library, we've cultivated rare publishing and African expertise.
+            </p>
+            <p class="text-[30px] text-lightgray md:mt-7 md:w-[97%]">
+                African writers of all genres, writers from all African industries are welcome here. To the contributing writer, we pledge quality story distribution, African editorial expertise, and community growth.
+            </p>
+             
+            <a class="hidden md:block text-black hover:text-lightblue fixed bottom-10 right-[10%] h-[22px] z-40 w-[82px] cursor-pointer" href="/about-us">Know us?</a>
+
+        </main>
+
+    </section>
+    {% include 'components/fixed_nav.html' %}
+</body>
+</html>

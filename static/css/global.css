@@ -1,0 +1,57 @@
+.info-message, .success-message, .error-message {
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 5px;
+    
+    position: absolute;
+}
+
+.info-message {
+    animation: fadeOut 5s forwards;
+    background-color: rgb(6, 69, 85);
+    right: 10px;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+.success-message {
+    background-color: rgb(2, 101, 119);
+    padding-inline: 10px;
+    transform: translateY(-100%);
+    transition: transform 0.5s ease-in-out;
+    animation: slideOut 10s forwards;
+}
+
+.input-error-message, .error-message {
+    color: rgb(77, 8, 3);
+}
+
+@keyframes fadeOut {
+    0%, 60% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+
+}
+
+@keyframes slideOut {
+    0%,60% {
+        opacity: 1;
+        transform: translateY(100%);
+    }
+    70% {
+        transform: translateY(-150%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-150%);
+        display: none;
+    }
+
+}

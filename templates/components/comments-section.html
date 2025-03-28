@@ -1,0 +1,142 @@
+{% load static %}
+{% load humanize %}
+<style>
+    .comments-section {
+        width: 100%;
+        border-block: 2px solid black;
+        padding: 50px;
+        box-sizing: border-box;
+    }
+    .comments-section p.title {
+        color: #2699EB;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .comments-container {
+        margin-top: 50px;
+    }
+    .comments-container form {
+        display: flex;
+        align-items: center;
+    }
+    .comments-container form input {
+        width: 100%;
+        height: 50px;
+        border: 0;
+        border-bottom: 1px solid #d9d9d9;
+        padding: 10px;
+        box-sizing: border-box;
+        color: #4a4a4a;
+    }
+    .comments-container form input:focus {
+        outline: none;
+        border: 0;
+        border-bottom: 2px solid #2699EB;
+    }
+    .comments {
+        padding-inline: 50px;
+        padding-block: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+        background-color: rgba(245, 245, 245, 0.493);
+        max-height: 300px;
+        overflow: scroll;
+    }
+    .comments::-webkit-scrollbar {
+        width: 5px;
+    }
+    .comments::-webkit-scrollbar-track {
+        background: rgba(217, 217, 217, 0.4);
+    }
+    .comments::-webkit-scrollbar-thumb {
+        background-color: #d9d9d9;
+        border-radius: 10px;
+    }
+    .comments::-webkit-scrollbar-thumb:hover {
+        background-color: #007acc;
+    }
+    .comments .comment {
+        display: flex;
+        flex-direction: column;
+        grid-area: 5px;
+        box-sizing: border-box;
+        font-family: Helvetica, sans-serif;
+    }
+    .comments .comment .top {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .comments .comment .top img.comment-profile {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .comments .comment .top p {
+        font-size: 14px;
+        color : #2699EB;
+    } 
+    .comments .comment .comment-text, 
+    .comments .comment .comment-text p {
+        color: #4a4a4a;
+        margin: 0;
+        padding: 0;
+    }
+    .comments p {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    @media (max-width: 500px) {
+        .comments-section {
+            padding: 20px;
+        }
+        .comments {
+            padding-inline: 30px;
+            padding-block: 10px;
+        }
+    }
+</style>
+
+
+<section class="comments-section">
+    <p class="title">
+        {% if comments.count > 0 %}
+            {{ comments.count|intword }} {{ comments.count|pluralize:"person,people" }} already said something positive
+        {% else %}
+            Be the first to say something positive✨
+        {% endif %}
+    </p>
+    <div class="comments-container">
+        <form action="post" style="position: relative;">
+            <input class="type-comment-input" type="text" placeholder="Say something positive..." name='comment' id="comment" minlength="5">
+            <!--<button class="emoji-btn" style="position: absolute; right: 30px; top: 10px; background-color: #2699EB; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;">😊</button>-->
+            <button class="submit-comment-btn" style="display: none; background-color: #2699EB; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; flex-shrink: 0; position: absolute; right: 0;">say it</button>
+            <!--<div class="emoji-picker-container" style="display: none; position: absolute; top: 40px; right: 0; background-color: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 5px;"></div>-->
+        </form>
+        <div class="comments">
+            {% for comment in comments|slice:":20" %}
+            <div class="comment">
+                <div class="top">
+                    <img class="comment-profile" src="{{ comment.commenter.avatar }}" alt="">
+                    {% if comment.commenter == request.user.profile %}
+                    <p>You Said</p>
+                    <img src="{% static 'assets/svgs/you_commented.svg' %}" alt="" srcset="">
+                    {% else %}
+                    <p>{{ comment.commenter.user.username }}</p>
+                    {% endif %}
+
+                </div>
+                <div class="comment-text">
+                    <p>{{comment.comment}}</p>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color: #4a4a4a">Comments will appear here...</p>
+            {% endfor %}
+            
+        </div>
+    </div>
+</section>

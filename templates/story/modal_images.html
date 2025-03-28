@@ -1,0 +1,333 @@
+{% load static %}
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.3.3/tailwind.min.js" defer></script>
+    
+    <style>
+        .container.editor-image-modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .container.editor-image-modal .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            flex-shrink: 0;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-image-modal .main-container {
+                width: 100%;
+                height: 250px;
+            }
+        }
+
+        .editor-image-modal .carousel {
+            max-width: 600px;
+            height: 300px;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            z-index: 10;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel {
+                width: 100%;
+                height: 250px;
+            }
+        }
+
+        .editor-image-modal .carousel img {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            display: block;
+            object-fit: cover;
+            object-position: 0 30%;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            border-radius: 10px;
+            user-select: none;
+            background-repeat: no-repeat;
+        }
+
+        .editor-image-modal .main-container:hover img {
+            /*transform: scale(1.1);
+            filter: brightness(0.5);*/
+        }
+
+        .editor-image-modal .carousel-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: transparent;
+        }
+
+        .editor-image-modal .main-container:hover .carousel-nav, .main-container:hover .profile-container {
+            opacity: 1;
+            z-index: 20;
+            user-select: none;
+        }
+
+        .editor-image-modal .carousel-nav button {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .editor-image-modal .carousel-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .editor-image-modal .actions-and-carousel-status {
+            
+            height: 60px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .editor-image-modal .actions-and-carousel-status::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgb(0, 0, 0);
+            opacity: 50%;
+            filter: blur(10);
+        }
+
+        .editor-image-modal .actions-and-carousel-status .add-image {
+           position: absolute;
+           right: 20px;
+           cursor: pointer;
+        }
+
+        .editor-image-modal .actions-and-carousel-status .dots-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .editor-image-modal .actions-and-carousel-status .dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 5px;
+            border: 0;
+            cursor: pointer;
+            transition: border 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .editor-image-modal .actions-and-carousel-status .dot img.remove-svg {
+            display: none;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.20s ease;
+            z-index: 30;
+        }
+        .editor-image-modal .actions-and-carousel-status .dot img.story-image-small {
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .editor-image-modal .actions-and-carousel-status .dot.active {
+            border: 2px solid #2699EB;
+        }
+
+        .editor-image-modal .actions-and-carousel-status .dot.active img.remove-svg {
+            display: block;
+        }
+
+        .editor-image-modal .images-alt {
+            color: #fff;
+        } 
+        
+        .editor-image-modal .images-alt:focus {
+            outline-color: #2699EB;
+        }
+
+        .editor-image-modal .images-alt:focus {
+            border: 0;
+        }
+    </style>
+</head>
+
+<section class="editor-image-modal container">
+    <div class="main-container">
+        <div class="carousel">
+            {% for image in story.images.all %}
+                <img src="{{image.image.url}}" alt="{{image.alt}}">
+            {% endfor %}
+            <!--<img src="assets/images/entrepreneur.avif" alt="Image 2">
+            <img src="assets/images/innovation.jpg" alt="Image 3">
+            <img src="assets/images/writing.jpg" alt="Image 4">-->
+            
+        </div>
+        <div class="carousel-nav">
+            <button class="carousel-prev" id="carousel-prev"><img src="{% static 'assets/svgs/prev-thick.svg' %}" alt=""></button>
+            <button class="carousel-next" id="carousel-next"><img src="{% static 'assets/svgs/next-thick.svg' %}" alt=""></button>
+        </div>
+        <div class="actions-and-carousel-status">
+            <div class="dots-container">
+                {% for image in story.images.all %}
+                    <div class="dot {% if forloop.first %}active{% endif %}"><img class="story-image-small" src="{{image.image.url}}" alt="{{image.alt}}"><img src="{% static 'assets/svgs/close-small.svg' %}" alt="" class="remove-svg"></div>
+                {% endfor %}
+                <!--<div class="dot"><img class="story-image-small" src="assets/images/entrepreneur.avif" alt=""><img src="/assets/svgs/close-small.svg" alt="" class="remove-svg"></div>
+                <div class="dot"><img class="story-image-small" src="assets/images/innovation.jpg" alt=""><img src="/assets/svgs/close-small.svg" alt="" class="remove-svg"></div>
+                <div class="dot"><img class="story-image-small" src="assets/images/writing.jpg" alt=""><img src="/assets/svgs/close-small.svg" alt="" class="remove-svg"></div>-->
+                <!--<div class="dot"><img src="assets/images/books.jpg" alt=""></div>
+                <div class="dot"><img src="assets/images/entrepreneur.avif" alt=""></div>-->
+            </div>
+            <div class="add-image">
+                <img src="{% static 'assets/svgs/plus.svg' %}" alt="" srcset="">
+            </div>
+        </div>
+    </div>
+    <p class="images-alt" contenteditable="true">Describe the image</p>
+</section>
+<script>
+    let carousel = document.querySelector('.editor-image-modal .carousel');
+    const carouselNext = document.querySelector('.editor-image-modal #carousel-next');
+    const carouselPrev = document.querySelector('.editor-image-modal #carousel-prev');
+    let dots = document.querySelectorAll('.editor-image-modal .actions-and-carousel-status .dot')
+
+    let currentSlide = 0;
+
+    const removeCarouselImage = (justin) => {
+        document.querySelectorAll('.remove-svg').forEach(svg => {
+            svg.addEventListener('click', (e) => {
+                const dot = e.target.closest('.dot');
+
+                if (!dot) return;
+                const img = dot.querySelector('img');
+                const index = Array.from(dots).indexOf(dot);
+                dot.remove()
+                const carouselImages = carousel.children;
+                if (carouselImages[index]) {
+                    carousel.removeChild(carouselImages[index]);
+                }
+                currentSlide = index -1;
+                console.log('idx', index)
+                console.log('currentslide', currentSlide)
+                    
+                updateSlide(currentSlide);
+                updateDots();
+
+
+            });
+        });
+    }
+
+    const updateSlide = (currentSlide) => {
+        carousel = document.querySelector('.editor-image-modal .carousel');
+        
+        carouselImages = carousel.children;
+        currentImage = carouselImages[currentSlide];
+
+        if (currentImage != undefined) {
+            const imagesAlt = document.querySelector('.editor-image-modal .images-alt');
+            imagesAlt.textContent = currentImage.alt === '' ? 'Describe the image' : currentImage.alt;
+        }
+
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    const updateDots = () => {
+        dots = document.querySelectorAll('.editor-image-modal .actions-and-carousel-status .dot');
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-svg')) return;
+                currentSlide = index;
+                updateSlide(currentSlide)
+                updateDots();
+            });
+        });
+    }
+
+    const addAltText = () => {
+        carouselImages = carousel.children;
+        currentImage = carouselImages[currentSlide];
+
+        const imagesAlt = document.querySelector('.editor-image-modal .images-alt');
+        imagesAlt.addEventListener('input', () => {
+            currentImage.alt = imagesAlt.textContent;
+        });
+    }
+
+    carouselNext.addEventListener('click', () => {
+        currentSlide++;
+        if (currentSlide >= carousel.children.length) {
+            currentSlide = 0;
+        }
+        updateSlide(currentSlide)
+        updateDots()
+    });
+
+    carouselPrev.addEventListener('click', () => {
+        currentSlide--;
+        if (currentSlide < 0) {
+            currentSlide = carousel.children.length - 1;
+        }
+        updateSlide(currentSlide)
+        updateDots()
+    });
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-svg')) return;
+
+            currentSlide = index;
+            updateSlide(currentSlide)
+            updateDots();
+        });
+    });
+
+    // add images to carousel
+    
+
+    
+
+    // remove image
+    removeCarouselImage()
+    // alt text
+    addAltText()
+</script>

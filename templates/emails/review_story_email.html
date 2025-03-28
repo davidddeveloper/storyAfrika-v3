@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Story Is Being Reviewed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        p {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        .timeline {
+            width: 80%;
+            max-width: 600px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .timeline li {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .timeline li img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+        .timeline li div {
+            display: flex;
+            flex-direction: column;
+        }
+        .timeline li h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .timeline li p {
+            margin: 5px 0 0;
+            color: #555;
+        }
+        footer {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Story Is Being Reviewed</h1>
+        <p>Thank you for sharing your story on StoryAfrika. We are currently reviewing it and will notify you within a day.</p>
+    </header>
+    <ul class="timeline">
+        <li>
+            <img src="https://img.icons8.com/fluency/48/submit-for-approval.png" alt="Submission Icon">
+            <div>
+                <h3>Step 1: Submission</h3>
+                <p>You have successfully submitted your story.</p>
+            </div>
+        </li>
+        <li>
+            <img src="https://img.icons8.com/bubbles/100/review.png" alt="Review Icon">
+            <div>
+                <h3>Step 2: Review</h3>
+                <p>Our team is carefully reviewing your story to ensure it aligns with our community guidelines.</p>
+            </div>
+        </li>
+        <li>
+            <img src="https://img.icons8.com/color/48/000000/approval.png" alt="Approval Icon">
+            <div>
+                <h3>Step 3: Approval</h3>
+                <p>Your story will be approved and published within 24 hours.</p>
+            </div>
+        </li>
+    </ul>
+    <footer>
+        <p>
+            Learn more about us on our <a href="https://storyafrika.live/about" target="_blank">About Page</a>.
+        </p>
+        <p>
+            To see you story and check the status of it, visit the <a href="https://storyafrika.live/{{story.id}}/review" target="_blank">Review Page</a>.
+        </p>
+        <p>
+            Have questions? Send them to <a href="mailto:storyafrika@gmail.com">storyafrika@gmail.com</a>.
+        </p>
+    </footer>
+</body>
+</html>

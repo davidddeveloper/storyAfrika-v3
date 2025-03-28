@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet">
+    <title>Welcome Email Template</title>
+    <style>
+        body {
+            font-family: 'Baloo 2', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        a {
+            text-decoration: none;
+            color: #4A4A4A;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ol {
+            padding: 0;
+        }
+        p {
+            color: #4a4a4a;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <img src="{% static 'assets/images/email-welcome-to-storyafrika-image.png' %}" width="100%" height="150" alt="Welcome to StoryAfrika" style="margin-bottom: 20px; object-fit: cover; border-radius: 10px;">
+    <p>Hi <strong>{{user.username}},</strong></p>
+    <p>Thank you for joining us. We are super happy you are a part of this journey.</p>
+    <br>
+    <h4>What we are building:</h4>
+    <div style="background-color: #f8f7f7; padding: 10px; border-radius: 5px;">
+        <p style="font-weight: bold;">The biggest writing platform for Africans</p>
+    </div>
+    <p style="color: #4A4A4A;">The <strong>vision</strong> is simple</p>
+    <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); padding: 10px; border-radius: 5px;">
+        <p style="color: #fff;">The story of Africans is scattered accross the internet, we are envisioning a one stop shop were Africans can share their stories with the world, engage with other Africans, learn from others, inspire and grow together</p>
+
+    </div>
+    <h4>How you can help Us:</h4>
+    <p >First tell others to join us at <a href="https://storyafrika.live/join_us" style="color: lightblue">storyafrika</a></p>
+    <p><a href="https://storyafrika.live/join_us" style="color: lightblue">Sign in</a> with your account details if you haven't done so:</p>
+    <div style="background-color: #f8f7f7; padding: 10px; border-radius: 5px;">
+        <ul>
+            <li style="color: #4A4A4A;">Username: {{user.username}}</li>
+            <li style="color: #4A4A4A;">Email: {{user.email}}</li>
+        </ul>
+    </div>
+    <br>
+    <p>Encourage your friends, family and colleagues to join us at <a href="https://storyafrika.live/join_us" style="color: lightblue">storyafrika</a></p>
+    <p>Share every story on all social media platforms</p>
+    <br>
+    <h4>Here is what to expect from us: </h4>
+    <div>
+        <p>We will send you a story every week.</p>
+        <p>We will send you a story every month.</p>
+        <div style="background-color: #f8f7f7; padding: 10px; border-radius: 5px;">
+            <p>The stories we will send you here will include your own stories, stories from other African writers and stories we are featuring.</p>
+        </div>
+    </div>
+    <br>
+    <p>We are glad to have you here with us {{user.username}},</p>
+    <p>Best,
+    <p>David</p>
+</body>
+</html>

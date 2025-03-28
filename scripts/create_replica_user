@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Function to create replica user
+create_replica_user() {
+    local pwd="$1"
+
+    # SQL command to create the user
+    sql_command="CREATE USER IF NOT EXISTS 'replica_user'@'%' IDENTIFIED BY '${pwd}';"
+
+    # Run the SQL command to create the user
+    echo "${sql_command}" | sudo mysql -u root
+
+    # SQL command to grant replication slave privileges
+    sql_command="GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';"
+
+    # Run the SQL command to grant the privileges
+    echo "${sql_command}" | sudo mysql -u root
+}
+
+# Check if a password argument is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <password>"
+    exit 1
+fi
+
+# Call the function with the provided password
+create_replica_user "$1"
+
+echo "Replica user created successfully."

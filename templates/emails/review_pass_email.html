@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Review Passed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4caf50;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h2 {
+            font-size: 22px;
+            color: #333333;
+        }
+        .content p {
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        .content .cta-button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #4caf50;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .content .cta-button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #777777;
+        }
+        .footer a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>StoryAfrika</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Congratulations!</h2>
+            <p>Your story has passed our review process successfully. It is now live on StoryAfrika and ready to inspire our global audience.</p>
+            <p>Thank you for contributing to our platform and sharing your story with the world.</p>
+            <a href="https://storyafrika.live/@{{story.writer.user.username}}/{{story.slug}}" class="cta-button">View Your Story</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Need assistance or have any questions? Feel free to reach out to us at <a href="mailto:storyafrika@gmail.com">storyafrika@gmail.com</a>.</p>
+            <p>Visit our <a href="https://storyafrika.live/about">About Page</a> to learn more about us.</p>
+        </div>
+    </div>
+</body>
+</html>

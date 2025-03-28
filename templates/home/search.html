@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="storyafrika - search results">
+    <meta name="description" content="You're searching for {{query}}">
+    <meta name="keywords" content="{% for topic in story.topics.all %}{{ topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %} African stories, African experiences, African achievements, StoryAfrika">
+    <meta property="og:title" content="storyafrika - You're searching for {{query}}">
+    <meta property="og:description" content="You're searching for {{query}}">
+    <meta property="og:url" content="{{request.build_absolute_uri}}">
+    <meta property="og:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="storyafrika - You're searching for {{query}}">
+    <meta name="twitter:description" content="You're searching for {{query}}">
+    <meta name="twitter:image" content="{% static 'images/write.webp'%}">
+    <meta name="twitter:creator" content="@{{story.writer.user.username}}">
+    <meta name="twitter:site" content="@StoryAfrika">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+    <title>storyafrika - Search Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff !important;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .truncate-ellipsis {
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Change this to the number of lines you want */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        nav button.active {
+                color: black;
+                font-weight: bold;
+            }
+    </style>
+</head>
+<body>
+    {% include 'components/new-header.html' %}
+    <main class="container mx-auto mt-10 p-5 px-3 sm:p-10">
+        <!--<div class="flex items-center md:w-[240px] rounded-3xl bg-[#f5f5f5] py-3 pl-[15px] gap-5">
+            <img src="/assets/svgs/search-icon.svg" alt="">
+            <form class="search-form" method="post" action="/">
+                <input type="text" name="search" id="search" placeholder="search.." class="input-to-search text-[#4a4a4a] bg-transparent focus:border-0 focus:outline-none">
+            </form>
+        </div>-->
+        <h2 class="text-[#4a4a4a] text-2xl mt-[45px] mb-[70px]">
+            You're searching for <span class="text-black">{{query}}</span>
+            <!-- Kaizen Approach -->
+        </h2>
+        
+        <nav class="relative flex items-center gap-7 mx-auto">
+            <button class="z-10 text-base text-lightgray active sm:text-black">Stories</button>
+            <button class="z-10 text-base text-lightgray sm:text-black ">People</button>
+            <button class=" z-10 text-base text-lightgray sm:text-black ">Topics</button>
+        </nav>
+        <article class="search-stories-container container stories-container items-start  relative mx-auto mt-[20px] mb-20 pt-[25px] pb-[25px] flex flex-col gap-[50px] shrink-1 overflow-y-scroll no-scrollbar ">
+            {% if stories %}
+                {% for story in stories %}
+                    {% include 'components/story-card.html' %}
+                {% endfor %}
+
+            {% elif topics %}
+                {% for topic in topics %}
+                    <p>{{ topic.name }}</p>
+                {% endfor %}
+            {% elif profiles %}
+                {% for profile in profiles %}
+                    <article class="user-profile mt-10">
+                        <header class="flex gap-3 items-start">
+                            <img class="change-src-to-http rounded-full object-cover shrink-0 w-12 h-12 border-2" src="{{ profile.avatar }}" alt="" srcset="">
+                            <div class="content cursor-pointer text-blue-500">
+                                <h4 class="m-0"><a href="#" style="text-decoration: none; color: black; font-weight: bold;">{% if profile.user.first_name and profile.user.last_name %} {{ profile.user.first_name }} {{ profile.user.last_name }} {% else %} {{profile.user.username}} {% endif %}</a> <!--<button><span>➕</span>Follow</button>--></h4>
+                                <h4 class="story-title"><a href="#" style="text-decoration: none; color: #4a4a4a;">{{profile.short_bio}}</a></h4>
+                            </div>
+                        </header>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        </article>
+    </main>
+    <script>
+
+        //const searchForm = document.querySelector('.search-form')
+        //const searchInput = document.getElementById('search');
+        const search_url = window.location.href.split(window.location.origin + '/')[1]
+        const category = search_url.split('category=')[1]
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            const searchQuery = searchInput.value;
+            if (searchQuery !== '') {
+                window.location.href = `/search?q=${searchQuery}&category=${category}`
+            }
+
+        })
+        
+        const buttons = document.querySelectorAll('nav button');
+
+        buttons.forEach(button => {
+            if (button.innerText.toLowerCase() == category) {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            }
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                if (button.innerText == 'Stories') {
+                    window.location.href = `/search?q={{query}}&category=stories`
+                } else if (button.innerText == 'People') {
+                    window.location.href = `/search?q={{query}}&category=people`
+                } else if (button.innerText == 'Topics') {
+                    window.location.href = `/search?q={{query}}&category=topics`
+                }
+            });
+        });
+
+        /*// fetch search results for story when user clicks on search button and on the stories nav
+        const searchInput = document.getElementById('search');
+        const searchResultsContainer = document.querySelector('.search-stories-container');
+
+        searchInput.addEventListener('input', async () => {
+            const searchQuery = searchInput.value;
+            const response = await fetch(`/search?search=${searchQuery}`);
+            const data = await response.json();
+            searchResultsContainer.innerHTML = '';
+            data.forEach(story => {
+                const storyElement = document.createElement('div');
+                storyElement.innerHTML = `
+                    <a href="/story/${story.id}">
+                        <img src="${story.image}" alt="${story.title}">
+                        <h3>${story.title}</h3>
+                        <p class="truncate-ellipsis">${story.description}</p>
+                    </a>
+                `;
+                searchResultsContainer.appendChild(storyElement);
+            });
+        });
+
+        // fetch search results for people when user clicks on the people nav
+        buttons[1].addEventListener('click', async () => {
+            const searchQuery = searchInput.value;
+            const response = await fetch(`/search?search=${searchQuery}`);
+            const data = await response.json();
+            searchResultsContainer.innerHTML = '';
+            data.forEach(story => {
+                const storyElement = document.createElement('div');
+                storyElement.innerHTML = `
+                    <a href="/story/${story.id}">
+                        <img src="${story.image}" alt="${story.title}">
+                        <h3>${story.title}</h3>
+                        <p class="truncate-ellipsis">${story.description}</p>
+                    </a>
+                `;
+                searchResultsContainer.appendChild(storyElement);
+            });
+        })
+        // fetch search results for topics when user clicks on the topics nav
+        buttons[2].addEventListener('click', async () => {
+            const searchQuery = searchInput.value;
+            const response = await fetch(`/search?search=${searchQuery}`);
+            const data = await response.json();
+            searchResultsContainer.innerHTML = '';
+            data.forEach(story => {
+                const storyElement = document.createElement('div');
+                storyElement.innerHTML = `
+                    <a href="/story/${story.id}">
+                        <img src="${story.image}" alt="${story.title}">
+                        <h3>${story.title}</h3>
+                        <p class="truncate-ellipsis">${story.description}</p>
+                    </a>
+                `;
+                searchResultsContainer.appendChild(storyElement);
+            });
+        })*/
+    </script>
+</body>
+</html>
