@@ -24,8 +24,7 @@ graphql-relay==3.2.0
 humanize_number==0.1.1
 idna==3.10
 MarkupSafe==3.0.2
-#mysqlclient==2.2.6
-mysql-connector-python
+mysqlclient==2.2.6
 pillow==11.0.0
 promise==2.3
 PyJWT==2.9.0
