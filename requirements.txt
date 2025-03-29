@@ -1,5 +1,6 @@
 asgiref==3.8.1
 beautifulsoup4==4.12.3
+bleach
 certifi==2024.8.30
 charset-normalizer==3.4.0
 cloudinary==1.41.0
