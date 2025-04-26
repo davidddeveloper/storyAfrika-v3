@@ -159,7 +159,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800 # 50mb
 # sending emails
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-SENDGRID_API_KEY = os.getenv('# ')
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
