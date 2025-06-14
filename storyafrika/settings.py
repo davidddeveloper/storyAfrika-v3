@@ -90,12 +90,12 @@ DATABASES = {
         #'NAME': BASE_DIR / 'db.sqlite3',
 
         # mysql
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv('MYSQL_DATABASE'),
-        "USER": os.getenv('MYSQL_USER'),
-        "PASSWORD": os.getenv('MYSQL_PASSWORD'),
-        "HOST": os.getenv('MYSQL_HOST'),
-        "PORT": os.getenv('MYSQL_PORT', 3306),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv('DB_SUPABASE_BD_NAME'),
+        "USER": os.getenv('DB_SUPABASE_USER'),
+        "PASSWORD": os.getenv('DB_SUPABASE_PASSWORD'),
+        "HOST": os.getenv('DB_SUPABASE_HOST'),
+        "PORT": os.getenv('DB_SUPABASE_PORT', 3306),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
