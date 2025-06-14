@@ -96,11 +96,11 @@ DATABASES = {
         "PASSWORD": os.getenv('DB_SUPABASE_PASSWORD'),
         "HOST": os.getenv('DB_SUPABASE_HOST'),
         "PORT": os.getenv('DB_SUPABASE_PORT', 3306),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
-            'autocommit': True
-        },
+        # 'OPTIONS': {
+        #     'charset': 'utf8mb4',
+        #     'init_command': "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
+        #     'autocommit': True
+        # },
     }
 }
 
