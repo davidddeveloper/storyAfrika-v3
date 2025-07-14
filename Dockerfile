@@ -34,4 +34,4 @@ EXPOSE 8000
 # This is the default command if no start command is specified in App Runner.
 # Replace 'yourprojectname.wsgi:application' with your actual WSGI file path.
 # For example, if your project folder is 'myproject', it would be 'myproject.wsgi:application'.
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "yourprojectname.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "storyafrika.wsgi:application"]
