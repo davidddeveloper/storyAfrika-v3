@@ -7,6 +7,8 @@ FROM python:3.12-slim
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     build-essential \
+    curl \
+    && curl -sS https://bootstrap.pypa.io/get-pip.py | python3 \
     # Add any other system dependencies your app might need, e.g., libpq-dev for PostgreSQL
     && rm -rf /var/lib/apt/lists/*
 
